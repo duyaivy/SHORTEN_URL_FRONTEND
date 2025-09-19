@@ -6,6 +6,8 @@ import { Copy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { To } from 'react-router-dom'
+import Lottie from 'lottie-react'
+import radioButton from '@/assets/icons/radioButton.json'
 interface OutputLinkProps {
   link?: string
 }
@@ -26,7 +28,9 @@ export default function OutputLink({ link }: OutputLinkProps) {
       <SheetContent side='bottom'>
         <div className='max-w-3xl mx-auto min-w-2xs sm:min-w-xl md:min-w-2xl flex flex-col items-center'>
           <SheetHeader>
-            <SheetTitle className='text-3xl text-main'>{t('decode_qr_success')}</SheetTitle>
+            <SheetTitle className='text-3xl text-main'>
+              <Lottie className='w-12 h-12 fill-main' animationData={radioButton} loop={false} />
+            </SheetTitle>
             <SheetDescription>{t('decode_qr_description')}</SheetDescription>
           </SheetHeader>
           <div className='flex w-full justify-center gap-2 flex-col mt-4 mb-8 md:flex-row items-center'>
