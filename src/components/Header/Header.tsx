@@ -1,11 +1,10 @@
 import { path } from '@/constants/path'
 import { Link } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-
 import classnames from 'classnames'
 import { useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
-import { useLogoutMutation } from '@/queries/auth.query'
+import { useLogoutMutation } from '@/apis/auth.api'
 import { useTranslation } from 'react-i18next'
 import {
   ListItem,
@@ -17,19 +16,22 @@ import {
   NavigationMenuTrigger
 } from '../ui/navigation-menu'
 import { logo } from '@/assets/images'
-import { Text } from 'lucide-react'
 import LinkHoverAnimate from '../LinkHoverAnimate'
-import { ICON_SIZE_XL } from '@/constants/icon-size'
-import classNames from 'classnames'
+import { menuV2 } from '@/assets/icons'
+import IconAnimateClick from '../IconAnimateClick'
+import { getRefreshTokenFromLS } from '@/utils/storage'
 
 export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation()
   const [isShow, setIsShow] = useState<boolean>(false)
 
   const logoutMutation = useLogoutMutation()
   const handleLogout = () => {
-    logoutMutation.mutate()
+    const refresh_token = getRefreshTokenFromLS()
+    if (refresh_token) {
+      logoutMutation.mutate(refresh_token)
+    }
   }
 
   return (
@@ -64,12 +66,17 @@ export default function Header() {
                           <Link to={path.my_url}>{t('my_url')}</Link>
                         </NavigationMenuLink>
                       </NavigationMenuItem>
+                      <NavigationMenuItem>
+                        <NavigationMenuLink asChild>
+                          <Link to={path.history}>{t('history')}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
                     </NavigationMenuList>
                   </NavigationMenu>
                 </div>
               </div>
               <div className=''>
-                <div className='flex h-full justify-end items-center '>
+                <div className=' h-full justify-end items-center hidden md:flex'>
                   {isAuthenticated && profile ? (
                     <NavigationMenu>
                       <NavigationMenuList>
@@ -77,7 +84,7 @@ export default function Header() {
                           <NavigationMenuTrigger className='!bg-transparent hover:!bg-transparent text-sm !text-tmain hover:!text-main duration-300 flex h-full justify-start md:justify-end items-center group cursor-pointer  w-full !p-0 !pl-0 md:!ml-4 md:!pr-0 '>
                             <div className='shrink-0 flex justify-center items-center  w-10 h-10  '>
                               <Avatar>
-                                <AvatarImage src={profile.avatar} alt='@shadcn' />
+                                <AvatarImage src={profile.avatar_url} alt='@shadcn' />
                                 <AvatarFallback>SL</AvatarFallback>
                               </Avatar>
                             </div>
@@ -115,7 +122,7 @@ export default function Header() {
                 }}
                 className=' flex justify-end items-center p-4 '
               >
-                <Text className={classNames({ 'text-white': !isShow }, { 'text-main': isShow })} size={ICON_SIZE_XL} />
+                <IconAnimateClick loop={false} play={true} animationData={menuV2} className='size-10 ' speed={2} />
               </button>
             </div>
           </div>
@@ -126,7 +133,7 @@ export default function Header() {
             background: 'radial-gradient(circle,rgba(18, 3, 41, 1) 0%, rgba(14, 2, 26, 1) 100%)'
           }}
           className={classnames(
-            'top-[-100%] right-0 left-0 shadow h-80px] translate-y-[-80px] opacity-0 invisible duration-300 z-10',
+            'top-[-100%] right-0 left-0 shadow h-80px] translate-y-[-80px] opacity-0 invisible duration-500 -z-1',
             { 'translate-y-[0px] opacity-100 visible ': isShow }
           )}
         >
@@ -151,19 +158,26 @@ export default function Header() {
                 {t('my_url')}
               </p>
             </ListItem>
-            <ListItem to={path.login}>
+            <ListItem to={path.history}>
               <p className='text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'>
-                {t('login')}
+                {t('history')}
               </p>
             </ListItem>
-            {isAuthenticated && profile && (
+
+            {isAuthenticated && profile ? (
               <ListItem to={path.login}>
                 <button
                   onClick={handleLogout}
                   className='w-full text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'
                 >
-                  {profile.name + ' | ' + t('logout')}
+                  {profile.email + ' | ' + t('logout')}
                 </button>
+              </ListItem>
+            ) : (
+              <ListItem to={path.login}>
+                <p className='text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'>
+                  {t('login')}
+                </p>
               </ListItem>
             )}
           </ul>

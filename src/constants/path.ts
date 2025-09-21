@@ -6,5 +6,6 @@ export const path = {
   scan_qr: '/scan-qr',
   shorten_link: '/shorten-url',
   notFound: '/404',
-  my_url: '/my-url'
+  my_url: '/my-url',
+  history: '/history'
 }
