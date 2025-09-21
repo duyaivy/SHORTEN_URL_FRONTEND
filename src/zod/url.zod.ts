@@ -11,7 +11,13 @@ export const ShortenURLSchema = () => {
     alias: z
       .string()
       .min(3, { message: t('alias_min_length') })
-      .max(30, { message: t('alias_max_length') })
+      .max(30, { message: t('alias_max_length') }),
+    password: z
+      .string()
+      .min(6, { message: t('password_min_length') })
+      .max(30, { message: t('password_max_length') })
+      .optional()
+      .or(z.literal(''))
   })
 }
 export type ShortenURLSchemaType = z.infer<ReturnType<typeof ShortenURLSchema>>

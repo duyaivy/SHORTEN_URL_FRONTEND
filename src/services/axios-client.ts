@@ -76,8 +76,8 @@ axiosClient.interceptors.response.use(
             return Promise.reject(error)
           }
 
-          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/refresh-token`, {
-            refreshToken: refreshToken
+          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/auth/refresh-token`, {
+            refresh_token: refreshToken
           })
 
           if (isEqual(response.status, HttpStatusCode.Ok)) {

@@ -8,12 +8,16 @@ import { useTranslation } from 'react-i18next'
 import { To } from 'react-router-dom'
 import Lottie from 'react-lottie-player'
 import radioButton from '@/assets/icons/radioButton.json'
-interface OutputLinkProps {
+import classNames from 'classnames'
+interface OutputAfterHandleProps {
   link?: string
+  type?: 'shorten' | 'scan'
+  qrCodeLink?: string
 }
-export default function OutputLink({ link }: OutputLinkProps) {
+export default function OutputAfterHandle({ link, type, qrCodeLink }: OutputAfterHandleProps) {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
+  const isScan = type === 'scan'
   const handleCopy = () => {
     if (link) {
       navigator.clipboard.writeText(link)
@@ -31,9 +35,27 @@ export default function OutputLink({ link }: OutputLinkProps) {
             <SheetTitle className='flex justify-center items-center'>
               <Lottie className='size-48' animationData={radioButton} play loop={false} />
             </SheetTitle>
-            <SheetDescription>{t('decode_qr_description')}</SheetDescription>
+            {isScan ? (
+              <SheetDescription>{t('decode_qr_description')}</SheetDescription>
+            ) : (
+              <SheetDescription>{t('shorten_link_success')}</SheetDescription>
+            )}
           </SheetHeader>
-          <div className='flex w-full justify-center gap-2 flex-col mt-4 mb-8 md:flex-row items-center'>
+          <div
+            className={classNames('flex w-full justify-center gap-2  flex-col mt-4 mb-8  items-center', {
+              'md:flex-row': isScan
+            })}
+          >
+            {!isScan && (
+              <div className='w-full md:w-3/5'>
+                <label className='bg-white p-4' htmlFor='download-qr'>
+                  <img src={qrCodeLink} alt='QR Code' className='w-full h-full object-contain' />
+                </label>
+                <a href={qrCodeLink} id='download-qr' download>
+                  {t('download_qr')}
+                </a>
+              </div>
+            )}
             <div className='w-full md:w-3/5 '>
               <Input
                 value={link}
@@ -43,11 +65,13 @@ export default function OutputLink({ link }: OutputLinkProps) {
                 iconOnClick={handleCopy}
               />
             </div>
-            <LinkHoverAnimate
-              className='w-full text-center text-lg mx-4 md:w-auto py-3'
-              text={t('access')}
-              to={link as To}
-            />
+            {isScan && (
+              <LinkHoverAnimate
+                className='w-full text-center text-lg mx-4 md:w-auto py-3'
+                text={t('access')}
+                to={link as To}
+              />
+            )}
           </div>
           <SheetClose />
         </div>
