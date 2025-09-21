@@ -11,9 +11,9 @@ import { logo } from '@/assets/images'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import isEqual from 'lodash/isEqual'
-import { useLoginMutation } from '@/queries/auth.query'
+import { useLoginMutation } from '@/apis/auth.api'
 import { authApi } from '@/services/auth.service'
-import { handleErrorAPI } from '@/utils/handleErrorAPI'
+import { useHandleError } from '@/utils/handleErrorAPI'
 import { useTranslation } from 'react-i18next'
 import InputPassword from '@/components/InputPassword/InputPassword'
 import { LoginSchema } from '@/zod/login.zod'
@@ -23,7 +23,8 @@ import AuthModal from './AuthModal'
 export default function Login() {
   const REMEMBER = localStorage.getItem('remmberMe') || 'false'
   const [rememberMe, setRememberMe] = useState<boolean>(isEqual(REMEMBER, 'true') ? true : false)
-  const { t } = useTranslation('auth')
+  const { t } = useTranslation()
+  const { handleErrorAPI } = useHandleError()
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {

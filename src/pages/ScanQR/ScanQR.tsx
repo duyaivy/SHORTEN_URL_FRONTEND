@@ -35,23 +35,31 @@ export default function ScanQR() {
   }, [])
   const handleScan = () => {
     if (html5QrCodeRef.current) {
-      html5QrCodeRef.current?.start(
-        { facingMode: 'environment' },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
-        },
-        (decodedText) => {
-          setValue({ link: decodedText, date: new Date() })
-          html5QrCodeRef.current?.stop().catch(() => {})
-        },
-        () => {
-          if (dateNow.getTime() + 10000 < new Date().getTime()) {
-            Toast.error({ description: t('cannot_detect_qr_code') })
-            dateNow = new Date()
+      html5QrCodeRef.current
+        ?.start(
+          { facingMode: 'environment' },
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+          },
+          (decodedText) => {
+            setValue({ link: decodedText, date: new Date() })
+            html5QrCodeRef.current?.stop().catch(() => {})
+          },
+          () => {
+            if (dateNow.getTime() + 10000 < new Date().getTime()) {
+              Toast.error({ description: t('cannot_detect_qr_code') })
+              dateNow = new Date()
+            }
           }
-        }
-      )
+        )
+        .catch((err) => {
+          if (String(err).includes('Permission denied')) {
+            Toast.error({ description: t('camera_permission_denied') })
+          } else {
+            Toast.error({ description: t('cannot_detect_qr_code') })
+          }
+        })
     }
   }
   const handleChangeTab = (value: string) => {

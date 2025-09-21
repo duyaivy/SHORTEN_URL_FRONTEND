@@ -1,36 +1,38 @@
 import axiosClient from '@/services/axios-client'
-import { LoginResponse, RegisterReponse, SentEmailResponse } from '@/models/interface/auth.interface'
+import { AuthResponse } from '@/models/interface/auth.interface'
 import { SuccessResponse } from '@/models/interface/response.interface'
-import { LoginType } from '@/models/types/login.type'
-import { RegisterType } from '@/models/types/register.type'
-const API_LOGIN_URL = 'users/login'
-const API_LOGOUT_URL = '/out'
-const API_REGISTER_URL = '/register'
-const API_SENT_EMAIL_URL = '/email/verify'
-const API_RESET_PASS_URL = '/email/reset-password'
+import { LoginType, RegisterType } from '@/models/types/auth.type'
+import { Omit } from 'lodash'
+const API_LOGIN_URL = '/auth/login'
+const API_LOGOUT_URL = '/auth/logout'
+const API_REGISTER_URL = '/auth/register'
+const API_RESET_PASS_URL = '/auth/reset-password'
+const API_FORGOT_PASS_URL = '/auth/forgot-password'
+const API_REFRESH_TOKEN_URL = '/auth/refresh-token'
 const API_LOGIN_GOOGLE = '/auth/callback'
 
 export const authApi = {
   login: (params: LoginType) => {
-    return axiosClient.post<SuccessResponse<LoginResponse>>(API_LOGIN_URL, params)
+    return axiosClient.post<SuccessResponse<AuthResponse>>(API_LOGIN_URL, params)
   },
-  register: (params: RegisterType) => {
-    return axiosClient.post<SuccessResponse<RegisterReponse>>(API_REGISTER_URL, params)
+  register: (params: Omit<RegisterType, 'confirmPassword'>) => {
+    return axiosClient.post<SuccessResponse<AuthResponse>>(API_REGISTER_URL, params)
   },
   resetPassword: (params: { email?: string }) => {
-    return axiosClient.get<SuccessResponse<SentEmailResponse>>(API_RESET_PASS_URL, {
+    return axiosClient.get<SuccessResponse<null>>(API_RESET_PASS_URL, {
       params
     })
   },
-  sentEmailAuth: (params: { email: string }) => {
-    return axiosClient.get<SuccessResponse<SentEmailResponse>>(API_SENT_EMAIL_URL, {
-      params
-    })
+  refreshToken: (token: string) => {
+    return axiosClient.post<SuccessResponse<AuthResponse>>(API_REFRESH_TOKEN_URL, { token })
   },
-  logout: () => {
-    return axiosClient.get<SuccessResponse<null>>(API_LOGOUT_URL)
+  logout: (refresh_token: string) => {
+    return axiosClient.delete<SuccessResponse<null>>(API_LOGOUT_URL, { data: { refresh_token } })
+  },
+  forgotPassword: (params: { email?: string }) => {
+    return axiosClient.get<SuccessResponse<null>>(API_FORGOT_PASS_URL, { params })
   },
   loginWithGG: (params: { code: string }) => {
-    return axiosClient.get<SuccessResponse<LoginResponse>>(API_LOGIN_GOOGLE, { params })
+    return axiosClient.get<SuccessResponse<AuthResponse>>(API_LOGIN_GOOGLE, { params })
   }
 }

@@ -51,7 +51,12 @@
   "decode_qr_description": "Đây là liên kết từ QR code của bạn, nhấn vào nút bên dưới để truy cập.",
   "url_res_placeholder": "Liên kết đã rút gọn",
   "copy_success": "Sao chép thành công",
+  "history": "Lịch sử QR",
   "access": "Truy cập",
+  "clear": "Xóa",
   "scan_qr_code_description": "Bật camera và quét mã QR để truy cập nhanh các liên kết.",
-  "cannot_detect_qr_code": "Không thể nhận diện mã QR. Vui lòng thử lại."
+  "cannot_detect_qr_code": "Không thể nhận diện mã QR. Vui lòng thử lại.",
+  "camera_permission_denied": "Quyền truy cập camera bị từ chối. Vui lòng cấp quyền để sử dụng tính năng này.",
+  "total_views": "Tổng truy cập: ",
+  "search": "Tìm kiếm..."
 }

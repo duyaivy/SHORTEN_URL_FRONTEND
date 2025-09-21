@@ -1,2 +1,4 @@
-export { default as IconEye } from './icon-eye.tsx'
-export { default as IconNonEye } from './icon-non-eye.tsx'
+import menuV2 from './menuV2.json'
+import radioButton from './radioButton.json'
+import trash from './trash.json'
+export { menuV2, radioButton, trash }

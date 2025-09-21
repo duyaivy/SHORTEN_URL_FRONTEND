@@ -7,6 +7,7 @@ import CommingSoon from '@/pages/CommingSoon'
 import ShortenURL from '@/pages/ShortenURL'
 import ScanQR from '@/pages/ScanQR'
 import AuthLayout from '@/components/AuthLayout'
+import HistoryQr from '@/pages/HistoryQr'
 // Lazy load all components
 const MyURL = lazy(() => import('@/pages/MyURL'))
 const Layout = lazy(() => import('@/components/Layout'))
@@ -114,6 +115,16 @@ export default function useRoutesElements() {
                 <LazyComponent>
                   <Layout>
                     <MyURL />
+                  </Layout>
+                </LazyComponent>
+              )
+            },
+            {
+              path: path.history,
+              element: (
+                <LazyComponent>
+                  <Layout>
+                    <HistoryQr />
                   </Layout>
                 </LazyComponent>
               )

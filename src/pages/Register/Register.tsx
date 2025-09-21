@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
-import { useRegisterMutation } from '@/queries/auth.query'
+import { useRegisterMutation } from '@/apis/auth.api'
 import InputPassword from '@/components/InputPassword/InputPassword'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +20,7 @@ import { logo } from '@/assets/images'
 
 export default function Register() {
   const navigate = useNavigate()
-  const { t } = useTranslation(['auth', 'common'])
+  const { t } = useTranslation()
   const [isConfirm, setIsconfirm] = useState<boolean>(false)
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -32,13 +32,14 @@ export default function Register() {
   })
   const mutationRegister = useRegisterMutation({ handleError: (error) => handleErrorAPI(error, form) })
   const handleRegister = async () => {
-    await mutationRegister.mutateAsync(form.getValues())
+    const { email, password } = form.getValues()
+    await mutationRegister.mutateAsync({ email, password })
     navigate(path.login)
   }
 
   return (
     <div className='max-w-3xl mx-auto'>
-      <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xls'>
+      <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xl'>
         <Link to={path.home}>
           <img src={logo} alt='logo' className='hidden md:block mb-4 h-20' />
         </Link>

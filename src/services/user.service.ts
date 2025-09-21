@@ -9,8 +9,8 @@ import {
   UserUpdateRequest
 } from '@/models/interface/user.interface'
 
-const API_USER_URL = '/users'
-const API_GET_ME_URL = '/users/me'
+const API_USER_URL = '/user'
+const API_GET_ME_URL = '/user/get-me'
 
 export const userApi = {
   get: (params: UserListConfig) => {

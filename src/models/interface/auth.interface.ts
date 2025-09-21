@@ -1,23 +1,9 @@
-import { role, User } from './user.interface'
-
-// define the Login interface
-export interface LoginResponse {
-  accessToken: string
-  refreshToken: string
-  user: User
+// define the AuthResponse interface
+export interface AuthResponse {
+  access_token: string
+  refresh_token: string
 }
-export interface SentEmailResponse {
-  email?: string
-  token?: string
-}
-
-// define the RegisterReponse interface
-export interface RegisterReponse {
-  id?: number
-  email?: string
-  password?: string
-  accessToken?: string
-  refreshToken?: string
-  roles?: role[]
-  emailConfirmed?: boolean
+export interface AuthErrorValidate {
+  field?: string
+  message?: string
 }

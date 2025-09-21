@@ -3,62 +3,46 @@ import { authApi } from '@/services/auth.service'
 import { useMutation } from '@tanstack/react-query'
 import { UseFormReturn } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-
 import { path } from '../constants/path'
-import { handleErrorAPI, handleToastError } from '@/utils/handleErrorAPI'
 import { Toast } from '@/utils/toastMessage'
 import { clearLS, setAccessTokenToLS, setRefreshTokenToLS, setUserToLS } from '@/utils/storage'
 import { User } from '@/models/interface/user.interface'
 import { useContext } from 'react'
 import { AppContext } from '../contexts/app.context'
 import { SuccessResponse } from '@/models/interface/response.interface'
-import { LoginResponse } from '@/models/interface/auth.interface'
+import { AuthResponse } from '@/models/interface/auth.interface'
 import { AxiosError, AxiosResponse } from 'axios'
-import { toast } from 'sonner'
+import { userApi } from '@/services/user.service'
+import { useTranslation } from 'react-i18next'
+import { useHandleError } from '@/utils/handleErrorAPI'
 
 // login
 interface useLoginProps<TVariables> {
-  mutationFn: (data: TVariables) => Promise<AxiosResponse<SuccessResponse<LoginResponse>>>
+  mutationFn: (data: TVariables) => Promise<AxiosResponse<SuccessResponse<AuthResponse>>>
   handleError?: (error: AxiosError) => void
 }
 export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLoginProps<TVariables>) => {
   const { setProfile, setIsAuthenticated } = useContext(AppContext)
-
+  const { t } = useTranslation()
   return useMutation({
     mutationKey: mutationKeys.login,
     mutationFn: mutationFn,
-    onSuccess: ({ data }) => {
-      setAccessTokenToLS(data.data.accessToken as string)
-      setRefreshTokenToLS(data.data.refreshToken as string)
-      setUserToLS(data.data.user as User)
+    onSuccess: async ({ data }) => {
+      setAccessTokenToLS(data.data.access_token as string)
+      setRefreshTokenToLS(data.data.refresh_token as string)
+      const dataUser = await userApi.getMe()
+      setUserToLS(dataUser.data.data as User)
+      setProfile(dataUser.data.data as User)
       setIsAuthenticated(true)
-      setProfile(data.data.user as User)
-      Toast.success({ title: 'Thành công', description: 'Đăng nhập thành công 🚀⚡' })
+      Toast.success({ title: t('login_success'), description: t('login_success_description') })
     },
     onError: handleError
   })
 }
 
-//re-sent email
-export const useSentMailMutation = (form: UseFormReturn<any>) => {
-  const navigate = useNavigate()
-  const email = form.getValues('email')
-  return useMutation({
-    mutationKey: ['sentEmail'],
-    mutationFn: () => authApi.sentEmailAuth({ email: email }),
-    onSuccess: () => {
-      Toast.success({
-        title: 'Thành công vui lòng xác thực email.',
-        description: `Email xác nhận đã được gửi tới ${email}, vui lòng kiểm tra Spam hoặc Thư rác.`
-      })
-      navigate(path.login)
-    },
-    onError: (error) => handleErrorAPI(error, form)
-  })
-}
-
 // reset pass
 export const useResetPWMutation = (form: UseFormReturn<any>) => {
+  const { handleToastError } = useHandleError()
   const navigate = useNavigate()
   const email = form.getValues('email')
   return useMutation({
@@ -75,29 +59,24 @@ export const useResetPWMutation = (form: UseFormReturn<any>) => {
   })
 }
 
-export const useResetPWSaleMutation = () => {
-  return useMutation({
-    mutationKey: ['resetPassSale'],
-    mutationFn: async ({ email }: { email?: string }) => {
-      return await toast.promise(authApi.resetPassword({ email }), {
-        loading: 'Đang gửi email đặt lại mật khẩu.',
-        success: (data) => `Email đã được gửi đến ${data.data.data.email}`,
-        error: 'Có lỗi trong quá trình gửi email.'
-      })
-    }
-  })
-}
-
 // register
 
 export const useRegisterMutation = ({ handleError }: { handleError?: (error: AxiosError) => void }) => {
+  const { t } = useTranslation('message')
+  const { setProfile, setIsAuthenticated } = useContext(AppContext)
   return useMutation({
     mutationKey: mutationKeys.register,
     mutationFn: authApi.register,
-    onSuccess: () => {
+    onSuccess: async ({ data }) => {
+      setAccessTokenToLS(data.data.access_token as string)
+      setRefreshTokenToLS(data.data.refresh_token as string)
+      const dataUser = await userApi.getMe()
+      setUserToLS(dataUser.data.data as User)
+      setProfile(dataUser.data.data as User)
+      setIsAuthenticated(true)
       Toast.success({
-        title: 'Thành công',
-        description: 'Đăng kí tài khoản thành công. Vui lòng kiểm tra Mail của bạn.'
+        title: t('register_success'),
+        description: t('register_success_description')
       })
     },
     onError: handleError

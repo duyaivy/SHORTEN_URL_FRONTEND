@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 export default function ShortenURL() {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation()
   const form = useForm<ShortenURLSchemaType>({
     resolver: zodResolver(ShortenURLSchema()),
     defaultValues: {

@@ -2,27 +2,12 @@ import { PaginationResponse } from './response.interface'
 
 export interface User {
   _id?: string
-  id?: number
-  name?: string
+  username?: string
   email?: string
   password?: string
-  phone?: string
-  address?: string
-  avatar?: string
-  googleId?: string
-  isActive?: boolean
-  dateOfBirth?: string
-  emailConfirmationToken?: string
-  createBy?: string
-  updateBy?: string
-  createAt?: string
-  updateAt?: string
-  roles?: role[]
-  emailConfirmed?: boolean
-  userTotalSuccessBookings?: number
-  userTotalFailedBookings?: number
-  saleTotalBookings?: number
-  saleSuccessPercent?: number
+  avatar_url?: string
+  created_at?: string
+  updated_at?: string
 }
 export interface UserUpdate {
   name?: string
