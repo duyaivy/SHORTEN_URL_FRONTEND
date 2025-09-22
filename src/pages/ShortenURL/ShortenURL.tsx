@@ -1,6 +1,5 @@
 import { useShortenUrlMutation } from '@/apis/url.api'
 import InputPassword from '@/components/InputPassword/InputPassword'
-import OutputAfterHandle from '@/components/OutputAfterHandle'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -12,6 +11,7 @@ import { ExternalLink, Link2 } from 'lucide-react'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import ReturnValue from './ReturnValue'
 
 export default function ShortenURL() {
   const { t } = useTranslation()
@@ -118,9 +118,9 @@ export default function ShortenURL() {
         </Form>
       </div>{' '}
       {shortenLinkMutation.isSuccess && (
-        <OutputAfterHandle
-          link={shortenLinkMutation.data?.data.data.short_url}
-          qrCodeLink={shortenLinkMutation.data?.data.data.qr_code}
+        <ReturnValue
+          qr_code_link={shortenLinkMutation.data?.data.data.qr_code}
+          short_url={shortenLinkMutation.data?.data.data.short_url}
         />
       )}
     </div>
