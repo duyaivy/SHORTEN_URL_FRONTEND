@@ -16,6 +16,16 @@ export const useShortenUrlMutation = ({ onSuccess, onError }: useShortenUrlProps
     onError
   })
 }
+
+export const useGetShortenUrlMutation = ({ onSuccess, onError }: useShortenUrlProps) => {
+  return useMutation({
+    mutationKey: mutationKeys.getShortenUrl,
+    mutationFn: ({ alias, password }: { alias: string; password: string }) => urlApi.getAliasWithPW(alias, password),
+    onSuccess,
+    onError
+  })
+}
+
 interface useQueryAliasProps {
   alias: string
 }

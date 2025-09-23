@@ -63,5 +63,6 @@
   "shorten_link_success": "Rút gọn liên kết thành công, dưới đây là mã QR và liên kết đã rút gọn của bạn.",
   "save_qr_image": "Lưu ảnh QR",
   "exit": "Thoát",
-  "download_qr_error": "Tải ảnh QR thất bại. Vui lòng thử lại."
+  "download_qr_error": "Tải ảnh QR thất bại. Vui lòng thử lại.",
+  "get_link_pw_description": "Liên kết này được bảo vệ. Vui lòng nhập mật khẩu để truy cập."
 }
