@@ -1,40 +1,19 @@
-import { useShortenUrlMutation } from '@/apis/url.api'
-import InputPassword from '@/components/InputPassword/InputPassword'
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { AppContext } from '@/contexts/app.context'
-import { useHandleError } from '@/utils/handleErrorAPI'
+import { Form } from '@/components/ui/form'
 import { ShortenURLSchema, ShortenURLSchemaType } from '@/zod/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ExternalLink, Link2 } from 'lucide-react'
-import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import ReturnValue from './ReturnValue'
 
-export default function ShortenURL() {
+export default function AliasFetchWithPW() {
   const { t } = useTranslation()
-  const { isAuthenticated } = useContext(AppContext)
-  const form = useForm<ShortenURLSchemaType>({
+  const handleSubmit = () => {}
+  const form = useForm<Pick<ShortenURLSchemaType, 'password'>>({
     resolver: zodResolver(ShortenURLSchema()),
     defaultValues: {
-      url: '',
-      alias: '',
       password: ''
     }
   })
   const { handleErrorAPI } = useHandleError()
-  const shortenLinkMutation = useShortenUrlMutation({
-    onError: (error) => handleErrorAPI(error, form)
-  })
-  const handleSubmit = () => {
-    const data = { ...form.getValues(), password: form.getValues('password') || undefined }
-    shortenLinkMutation.mutate(data)
-  }
-  const handleReset = () => {
-    form.reset()
-  }
   return (
     <div className='max-w-3xl mx-auto '>
       <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xl'>
@@ -113,12 +92,6 @@ export default function ShortenURL() {
           </form>
         </Form>
       </div>{' '}
-      {shortenLinkMutation.isSuccess && (
-        <ReturnValue
-          qr_code_link={shortenLinkMutation.data?.data.data.qr_code}
-          short_url={shortenLinkMutation.data?.data.data.short_url}
-        />
-      )}
     </div>
   )
 }

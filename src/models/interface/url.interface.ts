@@ -11,3 +11,7 @@ export interface URL {
   updated_at?: string
   short_url?: string
 }
+export interface GetAliasConfig {
+  alias?: string
+  password?: string
+}

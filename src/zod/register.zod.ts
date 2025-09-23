@@ -41,7 +41,7 @@ export const RegisterSchema = z
 export const SentMailSchema = z.object({
   email: z
     .string()
-    .min(2, {
+    .min(3, {
       message: 'Email không được để trống.'
     })
     .email({

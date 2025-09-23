@@ -43,7 +43,7 @@ export default function ReturnValue({ qr_code_link, short_url }: ReturnValueProp
   }
   return (
     <Dialog defaultOpen={Boolean(short_url)}>
-      <DialogContent className='mx-2 sm:max-w-md bg-black border-main border-1'>
+      <DialogContent className='max-w-11/12 sm:max-w-md bg-black border-main border-1 '>
         <DialogHeader>
           <DialogTitle className='flex justify-center items-center'>
             <Lottie className='size-30' animationData={radioButton} play loop={false} />
@@ -60,7 +60,7 @@ export default function ReturnValue({ qr_code_link, short_url }: ReturnValueProp
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <button className='px-4 border-white/50 cursor-pointer border-1 rounded-md'>{t('exit')}</button>
+            <button className='px-4 border-white/50 cursor-pointer border-1 rounded-md py-1.5'>{t('exit')}</button>
           </DialogClose>
           <Button className='bg-main text-black hover:bg-main/80 cursor-pointer duration-300' onClick={handleDownload}>
             {t('save_qr_image')}

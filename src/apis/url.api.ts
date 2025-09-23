@@ -2,7 +2,7 @@ import { mutationKeys } from '@/helpers/key-tanstack'
 import { SuccessResponse } from '@/models/interface/response.interface'
 import { URL } from '@/models/interface/url.interface'
 import { urlApi } from '@/services/url.service'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError, AxiosResponse } from 'axios'
 interface useShortenUrlProps {
   onSuccess?: (data: AxiosResponse<SuccessResponse<URL>>) => void
@@ -14,5 +14,14 @@ export const useShortenUrlMutation = ({ onSuccess, onError }: useShortenUrlProps
     mutationFn: urlApi.shortenUrl,
     onSuccess,
     onError
+  })
+}
+interface useQueryAliasProps {
+  alias: string
+}
+export const useQueryAlias = ({ alias }: useQueryAliasProps) => {
+  return useQuery({
+    queryKey: ['alias', alias],
+    queryFn: () => urlApi.getAlias(alias)
   })
 }
