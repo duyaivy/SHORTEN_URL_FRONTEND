@@ -1,23 +1,36 @@
+import { useShortenUrlMutation } from '@/apis/url.api'
+import InputPassword from '@/components/InputPassword/InputPassword'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { AppContext } from '@/contexts/app.context'
+import { useHandleError } from '@/utils/handleErrorAPI'
 import { ShortenURLSchema, ShortenURLSchemaType } from '@/zod/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ExternalLink, Link2 } from 'lucide-react'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import ReturnValue from './ReturnValue'
 
 export default function ShortenURL() {
   const { t } = useTranslation()
+  const { isAuthenticated } = useContext(AppContext)
   const form = useForm<ShortenURLSchemaType>({
     resolver: zodResolver(ShortenURLSchema()),
     defaultValues: {
       url: '',
-      alias: ''
+      alias: '',
+      password: ''
     }
   })
+  const { handleErrorAPI } = useHandleError()
+  const shortenLinkMutation = useShortenUrlMutation({
+    onError: (error) => handleErrorAPI(error, form)
+  })
   const handleSubmit = () => {
-    console.log('handleSubmit')
+    const data = { ...form.getValues(), password: form.getValues('password') || undefined }
+    shortenLinkMutation.mutate(data)
   }
   const handleReset = () => {
     form.reset()
@@ -67,6 +80,21 @@ export default function ShortenURL() {
                 </FormItem>
               )}
             />
+            {isAuthenticated && (
+              <FormField
+                control={form.control}
+                name={'password'}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('password')}</FormLabel>
+                    <FormControl>
+                      <InputPassword autoComplete='off' placeholder={t('password_url_placeholder')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <div className='flex w-full gap-2 items-center my-10'>
               <Button
                 type='reset'
@@ -75,7 +103,7 @@ export default function ShortenURL() {
                 {t('clear')}
               </Button>
               <Button
-                loading={false}
+                loading={shortenLinkMutation.isPending}
                 className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
                 type='submit'
               >
@@ -85,6 +113,12 @@ export default function ShortenURL() {
           </form>
         </Form>
       </div>{' '}
+      {shortenLinkMutation.isSuccess && (
+        <ReturnValue
+          qr_code_link={shortenLinkMutation.data?.data.data.qr_code}
+          short_url={shortenLinkMutation.data?.data.data.short_url}
+        />
+      )}
     </div>
   )
 }

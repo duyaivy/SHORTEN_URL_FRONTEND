@@ -4,6 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-re
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utils/lib'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 
 function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
   return (
@@ -49,6 +50,7 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
 }
 
 function PaginationPrevious({ isActive = true, className: cn, ...props }: React.ComponentProps<typeof PaginationLink>) {
+  const { t } = useTranslation()
   return (
     <PaginationLink
       aria-label='Go to previous page'
@@ -57,27 +59,29 @@ function PaginationPrevious({ isActive = true, className: cn, ...props }: React.
       {...props}
     >
       <ChevronLeftIcon />
-      <span className='hidden sm:block'>Previous</span>
+      <span className='hidden sm:block'>{t('previous')}</span>
     </PaginationLink>
   )
 }
 
 function PaginationNext({ isActive = true, className: cn, ...props }: React.ComponentProps<typeof PaginationLink>) {
+  const { t } = useTranslation()
+
   return (
     <PaginationLink
       aria-label='Go to next page'
       size='default'
-      // className={cn('gap-1 px-2.5 sm:pr-2.5', className)}
-      className={classNames('gap-1 px-2.5 sm:pr-2.5' + cn, { 'cursor-not-allowed': !isActive })}
+      className={classNames('gap-1 px-2.5 sm:pr-2.5', cn, { 'cursor-not-allowed': !isActive })}
       {...props}
     >
-      <span className='hidden sm:block'>Next</span>
+      <span className='hidden sm:block'>{t('next')}</span>
       <ChevronRightIcon />
     </PaginationLink>
   )
 }
 
 function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
+  const { t } = useTranslation()
   return (
     <span
       aria-hidden
@@ -86,7 +90,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'
       {...props}
     >
       <MoreHorizontalIcon className='size-4' />
-      <span className='sr-only'>More pages</span>
+      <span className='sr-only'>{t('more_pages')}</span>
     </span>
   )
 }

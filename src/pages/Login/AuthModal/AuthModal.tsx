@@ -20,7 +20,7 @@ export default function AuthModal({ type }: AuthModalProps) {
     resolver: type === 'forgot-password' ? zodResolver(SentMailSchema) : zodResolver(SentMailSchema),
     defaultValues: type === 'forgot-password' ? { email: '' } : { email: '' }
   })
-  const { t } = useTranslation(['auth', 'common'])
+  const { t } = useTranslation()
   const emailConfig = {
     'forgot-password': {
       title: t('forgot_password_title'),
@@ -36,7 +36,6 @@ export default function AuthModal({ type }: AuthModalProps) {
     }
   }
 
-  // const AuthModalMutation = useSentMailMutation(form)
   const resetPWMutation = useResetPWMutation(form)
 
   const onSubmit = () => {

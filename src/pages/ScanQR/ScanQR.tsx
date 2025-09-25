@@ -1,10 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CameraIcon, ImageUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import OutputLink from './OutputLink'
+
 import { useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 import { Toast } from '@/utils/toastMessage'
+import OutputAfterHandle from '@/components/OutputAfterHandle'
 interface Value {
   link: string
   date: Date
@@ -126,7 +127,7 @@ export default function ScanQR() {
           </Tabs>
         </div>
       </div>
-      <OutputLink key={value.date.getTime()} link={value.link} />
+      <OutputAfterHandle key={value.date.getTime()} link={value.link} />
     </>
   )
 }

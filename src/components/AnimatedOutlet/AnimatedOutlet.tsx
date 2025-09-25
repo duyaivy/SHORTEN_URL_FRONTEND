@@ -5,7 +5,6 @@ import { path } from '@/constants/path'
 export default function AnimatedOutletWrapper() {
   const location = useLocation()
   const isAuthPath = [path.login, path.register].includes(location.pathname)
-  const isAdminPath = location.pathname.startsWith(path._admin)
 
   return (
     <AnimatePresence mode='wait'>
@@ -13,7 +12,7 @@ export default function AnimatedOutletWrapper() {
         key={location.key}
         initial={{ opacity: 0, x: isAuthPath ? 20 : 0 }}
         animate={{ opacity: 1, x: 0 }}
-        exit={isAdminPath ? undefined : { opacity: 0, x: isAuthPath ? -20 : 0 }}
+        exit={{ opacity: 0, x: isAuthPath ? -20 : 0 }}
         transition={{ duration: 0.3 }}
         style={{ position: isAuthPath ? 'absolute' : 'relative', width: '100%' }}
       >

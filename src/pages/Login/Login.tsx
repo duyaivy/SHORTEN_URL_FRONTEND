@@ -119,7 +119,7 @@ export default function Login() {
             </Button>
             <p className='flex items-center justify-center'>
               {t('no_account')}?&nbsp;
-              <Link to='/register' className='cursor-pointer text-main hover:underline'>
+              <Link to={path.register} className='cursor-pointer text-main hover:underline'>
                 {t('register')}
               </Link>
             </p>

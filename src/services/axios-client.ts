@@ -1,7 +1,13 @@
 import config from '@/constants/config.const'
 
 import { SuccessResponse } from '@/models/interface/response.interface'
-import { clearLS, getAccessTokenFromLS, getRefreshTokenFromLS, setAccessTokenToLS } from '@/utils/storage'
+import {
+  clearLS,
+  getAccessTokenFromLS,
+  getRefreshTokenFromLS,
+  setAccessTokenToLS,
+  setRefreshTokenToLS
+} from '@/utils/storage'
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -13,7 +19,8 @@ import axios, {
 import isEqual from 'lodash/isEqual'
 
 interface TokenResponse {
-  accessToken: string
+  access_token: string
+  refresh_token: string
   email: string
 }
 
@@ -76,23 +83,22 @@ axiosClient.interceptors.response.use(
             return Promise.reject(error)
           }
 
-          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/refresh-token`, {
-            refreshToken: refreshToken
+          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/auth/refresh-token`, {
+            refresh_token: refreshToken
           })
 
           if (isEqual(response.status, HttpStatusCode.Ok)) {
-            const { accessToken } = response.data.data
+            const { access_token, refresh_token } = response.data.data
 
-            setAccessTokenToLS(accessToken)
-
-            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+            setAccessTokenToLS(access_token)
+            setRefreshTokenToLS(refresh_token)
+            axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
 
             if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${accessToken}`
+              originalRequest.headers.Authorization = `Bearer ${access_token}`
             }
 
-            onRefreshed(accessToken)
-
+            onRefreshed(access_token)
             isRefreshing = false
             return axiosClient(originalRequest)
           }

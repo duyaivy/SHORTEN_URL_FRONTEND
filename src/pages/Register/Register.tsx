@@ -4,7 +4,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { path } from '@/constants/path'
-import { handleErrorAPI } from '@/utils/handleErrorAPI'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,10 +16,12 @@ import { useTranslation } from 'react-i18next'
 import { RegisterSchema } from '@/zod/register.zod'
 import { Mail } from 'lucide-react'
 import { logo } from '@/assets/images'
+import { useHandleError } from '@/utils/handleErrorAPI'
 
 export default function Register() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { handleErrorAPI } = useHandleError()
   const [isConfirm, setIsconfirm] = useState<boolean>(false)
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -134,7 +135,7 @@ export default function Register() {
             {/* <SentEmail type='verification' /> */}
             <p className='flex items-center justify-center '>
               {t('have_account')}?&nbsp;
-              <Link to='/login' className='cursor-pointer  text-main hover:underline '>
+              <Link to={path.login} className='cursor-pointer  text-main hover:underline '>
                 {t('login')}
               </Link>
             </p>

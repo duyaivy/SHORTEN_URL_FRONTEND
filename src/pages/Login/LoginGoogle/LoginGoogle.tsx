@@ -24,7 +24,7 @@ export default function LoginGoogle() {
   }, [access_token, refresh_token, getMeMutation, navigate])
 
   // xuly
-  const { t } = useTranslation('auth')
+  const { t } = useTranslation()
   const myRef = useRef<HTMLAnchorElement>(null)
   const mutationLogin = useLoginMutation({
     mutationFn: authApi.loginWithGG,

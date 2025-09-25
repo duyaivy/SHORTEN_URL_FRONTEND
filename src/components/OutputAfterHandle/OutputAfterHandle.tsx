@@ -8,10 +8,11 @@ import { useTranslation } from 'react-i18next'
 import { To } from 'react-router-dom'
 import Lottie from 'react-lottie-player'
 import radioButton from '@/assets/icons/radioButton.json'
-interface OutputLinkProps {
+
+interface OutputAfterHandleProps {
   link?: string
 }
-export default function OutputLink({ link }: OutputLinkProps) {
+export default function OutputAfterHandle({ link }: OutputAfterHandleProps) {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
   const handleCopy = () => {
@@ -33,7 +34,7 @@ export default function OutputLink({ link }: OutputLinkProps) {
             </SheetTitle>
             <SheetDescription>{t('decode_qr_description')}</SheetDescription>
           </SheetHeader>
-          <div className='flex w-full justify-center gap-2 flex-col mt-4 mb-8 md:flex-row items-center'>
+          <div className={'flex w-full justify-center gap-2  flex-col mt-4 mb-8 md:flex-row  items-center'}>
             <div className='w-full md:w-3/5 '>
               <Input
                 value={link}
@@ -43,6 +44,7 @@ export default function OutputLink({ link }: OutputLinkProps) {
                 iconOnClick={handleCopy}
               />
             </div>
+
             <LinkHoverAnimate
               className='w-full text-center text-lg mx-4 md:w-auto py-3'
               text={t('access')}

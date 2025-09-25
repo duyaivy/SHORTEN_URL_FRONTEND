@@ -1,11 +1,13 @@
 export const path = {
-  home: '/',
-  login: '/login',
-  register: '/register',
-  coming_soon: '/coming-soon',
-  scan_qr: '/scan-qr',
-  shorten_link: '/shorten-url',
-  notFound: '/404',
-  my_url: '/my-url',
-  history: '/history'
+  home: '',
+  login: '/a/login',
+  register: '/a/register',
+  coming_soon: '/a/coming-soon',
+  scan_qr: '/a/scan-qr',
+  shorten_link: '/a/shorten-url',
+  notFound: '/a/404',
+  my_url: '/a/my-url',
+  history: '/a/history',
+  get_alias: '/:alias',
+  get_alias_with_pw: '/password/:alias'
 }

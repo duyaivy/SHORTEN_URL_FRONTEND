@@ -8,6 +8,8 @@ import ShortenURL from '@/pages/ShortenURL'
 import ScanQR from '@/pages/ScanQR'
 import AuthLayout from '@/components/AuthLayout'
 import HistoryQr from '@/pages/HistoryQr'
+import AliasFetch from '@/pages/GetLink/AliasFetch'
+import AliasFetchWithPW from '@/pages/GetLink/AliasFetchWithPW'
 // Lazy load all components
 const MyURL = lazy(() => import('@/pages/MyURL'))
 const Layout = lazy(() => import('@/components/Layout'))
@@ -38,7 +40,7 @@ interface RouteConfig {
 }
 
 function ProtectedRoute() {
-  //admin
+  //a
   const { isAuthenticated, profile } = useContext(AppContext)
   if (profile && isAuthenticated) {
     return <Outlet />
@@ -57,7 +59,7 @@ export default function useRoutesElements() {
 
   const routes: RouteConfig[] = [
     {
-      path: '',
+      path: '/a',
       element: (
         <LazyComponent>
           <AnimatedOutlet />
@@ -104,9 +106,8 @@ export default function useRoutesElements() {
             </LazyComponent>
           )
         },
-
         {
-          path: '',
+          path: '/a',
           element: <ProtectedRoute />,
           children: [
             {
@@ -132,7 +133,7 @@ export default function useRoutesElements() {
           ]
         },
         {
-          path: '',
+          path: '/a',
           element: <RejectedRoute />,
           children: [
             {
@@ -156,6 +157,37 @@ export default function useRoutesElements() {
               )
             }
           ]
+        }
+      ]
+    },
+    {
+      path: '',
+      element: <Outlet />,
+      children: [
+        {
+          path: path.home,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <HomePage />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+
+        {
+          path: path.get_alias_with_pw,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <AliasFetchWithPW />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
+          path: path.get_alias,
+          element: <AliasFetch />
         },
         {
           path: '*',
