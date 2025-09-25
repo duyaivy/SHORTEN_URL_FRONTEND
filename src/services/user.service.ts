@@ -1,13 +1,6 @@
 import axiosClient from './axios-client'
 import { SuccessResponse } from '@/models/interface/response.interface'
-import {
-  roleAddRequest,
-  User,
-  UserListConfig,
-  UserRequest,
-  UserResponse,
-  UserUpdateRequest
-} from '@/models/interface/user.interface'
+import { User, UserListConfig, UserRequest, UserResponse, UserUpdateRequest } from '@/models/interface/user.interface'
 
 const API_USER_URL = '/user'
 const API_GET_ME_URL = '/user/get-me'
@@ -25,9 +18,7 @@ export const userApi = {
   getById: (id: number) => {
     return axiosClient.get<SuccessResponse<User>>(`${API_USER_URL}/${id}`)
   },
-  addRole: (params: roleAddRequest) => {
-    return axiosClient.put<SuccessResponse<any>>(`${API_USER_URL}/roles`, params)
-  },
+
   add: (user: UserRequest) => {
     return axiosClient.post<SuccessResponse<UserResponse>>(API_USER_URL, user)
   },

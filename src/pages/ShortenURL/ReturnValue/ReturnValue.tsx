@@ -7,11 +7,12 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Toast } from '@/utils/toastMessage'
-import { Copy } from 'lucide-react'
+import { Copy, QrCode } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Lottie from 'react-lottie-player'
 import { saveAs } from 'file-saver'
@@ -19,8 +20,9 @@ import axios from 'axios'
 interface ReturnValueProps {
   qr_code_link?: string
   short_url?: string
+  type?: 'click' | 'listen'
 }
-export default function ReturnValue({ qr_code_link, short_url }: ReturnValueProps) {
+export default function ReturnValue({ qr_code_link, short_url, type = 'listen' }: ReturnValueProps) {
   const { t } = useTranslation()
   const handleCopy = () => {
     if (short_url) {
@@ -42,7 +44,12 @@ export default function ReturnValue({ qr_code_link, short_url }: ReturnValueProp
     }
   }
   return (
-    <Dialog defaultOpen={Boolean(short_url)}>
+    <Dialog defaultOpen={type === 'listen' ? Boolean(qr_code_link) : false}>
+      {type === 'click' && (
+        <DialogTrigger className='flex items-center'>
+          <QrCode className='size-5 md:size-6 cursor-pointer' />
+        </DialogTrigger>
+      )}
       <DialogContent className='max-w-11/12 sm:max-w-md bg-black border-main border-1 '>
         <DialogHeader>
           <DialogTitle className='flex justify-center items-center'>

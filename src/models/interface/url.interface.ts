@@ -11,7 +11,15 @@ export interface URL {
   updated_at?: string
   short_url?: string
 }
-export interface GetAliasConfig {
-  alias?: string
-  password?: string
+export interface ExtraURL extends URL {
+  isCheck: boolean
+}
+export interface UrlMiniUpdate {
+  is_active: boolean
+  _id: string
+}
+export interface GetPaginationConfig {
+  page?: number
+  limit?: number
+  search?: string
 }

@@ -16,3 +16,7 @@ export interface PaginationResponse {
   limit?: number
   total?: number
 }
+export interface ResponseWithPagination<dataType> {
+  control: PaginationResponse
+  data: dataType[]
+}

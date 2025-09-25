@@ -64,5 +64,17 @@
   "save_qr_image": "Lưu ảnh QR",
   "exit": "Thoát",
   "download_qr_error": "Tải ảnh QR thất bại. Vui lòng thử lại.",
-  "get_link_pw_description": "Liên kết này được bảo vệ. Vui lòng nhập mật khẩu để truy cập."
+  "get_link_pw_description": "Liên kết này được bảo vệ. Vui lòng nhập mật khẩu để truy cập.",
+  "more_pages": "Thêm nữa",
+  "next": "Tiếp",
+  "previous": "Trước",
+  "cancel": "Hủy",
+  "delete": "Xóa",
+  "confirm_delete_placeholder": "Nhập...",
+  "confirm_delete_description": "Để xác nhận xóa, vui lòng nhập \"{{requiredText}}\" vào ô bên dưới.",
+  "confirm_delete_title": "Xác nhận xóa",
+  "require_text_all": "{{count}} URLs",
+  "update_url_title": "Cập nhật URL",
+  "update_url_description": "Cập nhật thông tin URL bên dưới. Vui lòng nhập mật khẩu mới hoặc để trống nếu không muốn cài mật khẩu cho liên kết.",
+  "update": "Cập nhật"
 }

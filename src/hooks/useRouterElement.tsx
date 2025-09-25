@@ -160,11 +160,21 @@ export default function useRoutesElements() {
         }
       ]
     },
-
     {
       path: '',
       element: <Outlet />,
       children: [
+        {
+          path: path.home,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <HomePage />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+
         {
           path: path.get_alias_with_pw,
           element: (
