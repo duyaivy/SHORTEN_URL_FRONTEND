@@ -28,12 +28,13 @@ export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLog
     mutationKey: mutationKeys.login,
     mutationFn: mutationFn,
     onSuccess: async ({ data }) => {
+      setIsAuthenticated(true)
       setAccessTokenToLS(data.data.access_token as string)
       setRefreshTokenToLS(data.data.refresh_token as string)
       const dataUser = await userApi.getMe()
       setUserToLS(dataUser.data.data as User)
       setProfile(dataUser.data.data as User)
-      setIsAuthenticated(true)
+
       Toast.success({ title: t('login_success'), description: t('login_success_description') })
     },
     onError: handleError

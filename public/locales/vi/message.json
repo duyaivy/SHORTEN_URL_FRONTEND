@@ -17,5 +17,6 @@
   "change_status_url_success": "Thay đổi trạng thái liên kết thành công",
   "update_url_success": "Cập nhật liên kết thành công",
   "reset_password_success": "Đặt lại mật khẩu thành công",
-  "forgot_password_success": "Yêu cầu đặt lại mật khẩu thành công vui lòng kiểm tra email {{email}}, bao gồm cả thư mục spam, thư rác."
+  "forgot_password_success": "Yêu cầu đặt lại mật khẩu thành công vui lòng kiểm tra email {{email}}, bao gồm cả thư mục spam, thư rác.",
+  "failed_to_login_with_google": "Đăng nhập với Google thất bại. Vui lòng thử lại sau."
 }

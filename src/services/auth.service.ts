@@ -9,7 +9,7 @@ const API_REGISTER_URL = '/auth/register'
 const API_RESET_PASS_URL = '/auth/reset-password'
 const API_FORGOT_PASS_URL = '/auth/forgot-password'
 const API_REFRESH_TOKEN_URL = '/auth/refresh-token'
-const API_LOGIN_GOOGLE = '/auth/callback'
+const API_LOGIN_GOOGLE = '/auth/oauth'
 
 export const authApi = {
   login: (params: LoginType) => {
