@@ -1,11 +1,27 @@
+import { useLoginMutation } from '@/apis/auth.api'
 import { path } from '@/constants/path'
+import { useParamsString } from '@/hooks/useUrlParams'
+import { authApi } from '@/services/auth.service'
+import { Toast } from '@/utils/toastMessage'
 import { LinkIcon, ScanQrCode } from 'lucide-react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 const HomePage = () => {
   const { t } = useTranslation(['common'])
-
+  const { code } = useParamsString()
+  const mutationLogin = useLoginMutation({
+    mutationFn: authApi.loginWithGG,
+    handleError: () => {
+      Toast.error({ description: t('message:failed_to_login_with_google') })
+    }
+  })
+  useEffect(() => {
+    if (code) {
+      mutationLogin.mutate({ code })
+    }
+  }, [code])
   return (
     <div className='max-w-5xl mx-auto px-4 flex gap-2 mo:gap-20 flex-col md:flex-row justify-around items-center pb-16 '>
       <Link to={path.scan_qr} className='flex flex-col justify-center items-center group gap-3 max-w-sm'>

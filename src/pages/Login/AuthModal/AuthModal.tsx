@@ -1,24 +1,31 @@
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useResetPWMutation } from '@/apis/auth.api'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { SentMailSchema } from '@/zod/register.zod'
+
 import { Mail } from 'lucide-react'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Fragment } from 'react/jsx-runtime'
+import { useRegisterSchema } from '@/zod/register.zod'
+import { useState } from 'react'
+import InputPassword from '@/components/InputPassword/InputPassword'
+import { useForgotOrResetPWMutation } from '@/apis/auth.api'
 
 interface AuthModalProps {
   type: 'forgot-password' | 'reset-password'
+  token?: string
 }
 
-export default function AuthModal({ type }: AuthModalProps) {
-  const form = useForm<z.infer<typeof SentMailSchema>>({
-    resolver: type === 'forgot-password' ? zodResolver(SentMailSchema) : zodResolver(SentMailSchema),
-    defaultValues: type === 'forgot-password' ? { email: '' } : { email: '' }
+export default function AuthModal({ type, token }: AuthModalProps) {
+  const { SentMailSchema, ResetPasswordSchema } = useRegisterSchema()
+  const [open, setOpen] = useState<boolean>(type === 'forgot-password' ? false : true)
+  const form = useForm<z.infer<typeof SentMailSchema | typeof ResetPasswordSchema>>({
+    resolver: type === 'forgot-password' ? zodResolver(SentMailSchema) : (zodResolver(ResetPasswordSchema) as any),
+    defaultValues: type === 'forgot-password' ? { email: '' } : { password: '', confirmPassword: '' }
   })
   const { t } = useTranslation()
   const emailConfig = {
@@ -36,26 +43,27 @@ export default function AuthModal({ type }: AuthModalProps) {
     }
   }
 
-  const resetPWMutation = useResetPWMutation(form)
+  const resetPWMutation = useForgotOrResetPWMutation(form, false, setOpen, token)
+  const forgotPWMutation = useForgotOrResetPWMutation(form, true, setOpen)
 
   const onSubmit = () => {
     if (type === 'forgot-password') {
-      // AuthModalMutation.mutate()
+      forgotPWMutation.mutate()
     } else {
       resetPWMutation.mutate()
     }
   }
 
   const config = emailConfig[type]
-  // const isLoading = type === 'forgot-password' ? AuthModalMutation.isPending : resetPWMutation.isPending
-  const isLoading = resetPWMutation.isPending
+  const isLoading = type === 'forgot-password' ? forgotPWMutation.isPending : resetPWMutation.isPending
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <p className='cursor-pointer hover:underline text-gray-500'>{config.questionText}</p>
       </SheetTrigger>
       <SheetContent side={'bottom'}>
-        <div className='max-w-3xl mx-auto min-w-sm sm:min-w-xl md:min-w-2xl flex flex-col items-center'>
+        <div className='max-w-3xl mx-auto min-w-xs sm:min-w-xl md:min-w-2xl flex flex-col items-center'>
           <SheetHeader>
             <SheetTitle>{config.title}</SheetTitle>
             <SheetDescription>{config.description}</SheetDescription>
@@ -86,17 +94,15 @@ export default function AuthModal({ type }: AuthModalProps) {
                 <Fragment>
                   <FormField
                     control={form.control}
-                    name='email'
+                    name='password'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('email')} </FormLabel>
+                        <FormLabel>{t('password')} </FormLabel>
                         <FormControl>
-                          <Input
+                          <InputPassword
                             className='focus:outline-0 mt-1 bg-transparent'
-                            placeholder={t('email_placeholder')}
-                            type='email'
+                            placeholder={t('password_placeholder')}
                             {...field}
-                            icon={<Mail />}
                           />
                         </FormControl>
                         <FormMessage />
@@ -105,17 +111,15 @@ export default function AuthModal({ type }: AuthModalProps) {
                   />
                   <FormField
                     control={form.control}
-                    name='email'
+                    name='confirmPassword'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('email')} </FormLabel>
+                        <FormLabel>{t('confirm_password')} </FormLabel>
                         <FormControl>
-                          <Input
+                          <InputPassword
                             className='focus:outline-0 mt-1 bg-transparent'
-                            placeholder={t('email_placeholder')}
-                            type='email'
+                            placeholder={t('confirm_password_placeholder')}
                             {...field}
-                            icon={<Mail />}
                           />
                         </FormControl>
                         <FormMessage />

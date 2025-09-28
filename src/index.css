@@ -40,15 +40,16 @@
   --color-neutral-900: #026d47;
   --color-neutral-950: #015739;
 
-  /* font text*/
+  /* container */
+  --container-2sm: 375px;
 
+  /* font text*/
   --text-body: 14px;
   --text-sub1: 16px;
   --text-menu: 16px;
   --text-sub2: 14px;
   --text-sub3: 12px;
   --text-sub0: 18px;
-
   /* breack point*/
   --breakpoint-mo: 992px;
 }

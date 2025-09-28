@@ -1,37 +1,13 @@
 import { Button } from '@/components/ui/button'
 import config from '@/constants/config.const'
-import { useLoginMutation } from '@/apis/auth.api'
-import { useGetMe } from '@/apis/user.api'
-import { authApi } from '@/services/auth.service'
-// import { useParamsString } from '@/hooks/usePrdQueryConfig'
-import { setAccessTokenToLS, setRefreshTokenToLS } from '@/utils/storage'
-import { Toast } from '@/utils/toastMessage'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 export default function LoginGoogle() {
-  const { access_token, refresh_token } = { access_token: '', refresh_token: '' } // useParamsString()
-  // const { access_token, refresh_token } = useParamsString()
-  const navigate = useNavigate()
-  const getMeMutation = useGetMe()
-  useEffect(() => {
-    if (access_token && refresh_token) {
-      setAccessTokenToLS(access_token as string)
-      setRefreshTokenToLS(refresh_token as string)
-      getMeMutation.mutate()
-    }
-  }, [access_token, refresh_token, getMeMutation, navigate])
-
-  // xuly
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'message'])
   const myRef = useRef<HTMLAnchorElement>(null)
-  const mutationLogin = useLoginMutation({
-    mutationFn: authApi.loginWithGG,
-    handleError: () => {
-      Toast.error({ description: 'Đăng nhập với Google thất bại, vui lòng thử lại sau!' })
-    }
-  })
+
   const getGoogleURL = () => {
     const url = config.googleURL
     const query = {
@@ -57,7 +33,6 @@ export default function LoginGoogle() {
         onClick={() => {
           loginGG()
         }}
-        loading={mutationLogin.isPending}
         className='flex items-center justify-center w-full text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg'
       >
         <svg
