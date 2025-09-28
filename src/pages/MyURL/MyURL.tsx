@@ -115,7 +115,7 @@ export default function MyURL() {
     <div className='max-w-6xl mx-auto min-h-[70vh] '>
       <div
         className='flex flex-col justify-center px-2 items-center 
-        min-w-[375px] sm:min-w-xl md:min-w-2xl xl:!min-w-6xl 
+        min-w-2sm sm:min-w-xl md:min-w-2xl xl:!min-w-6xl 
       '
       >
         {/* control */}

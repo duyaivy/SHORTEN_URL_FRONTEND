@@ -10,10 +10,12 @@
   "register_success": "Đăng ký thành công",
   "register_success_description": "Đăng kí tài khoản thành công!",
   "login_success": "Đăng nhập thành công",
-  "login_success_description": "Đăng nhập thành công!",
+  "login_success_description": "Rút gọn liên kết ngay nào!",
   "something_went_wrong": "Có lỗi xảy ra, vui lòng thử lại sau.",
   "error_occurred": "Có lỗi xảy ra",
   "unknown_error": "Lỗi không xác định.",
   "change_status_url_success": "Thay đổi trạng thái liên kết thành công",
-  "update_url_success": "Cập nhật liên kết thành công"
+  "update_url_success": "Cập nhật liên kết thành công",
+  "reset_password_success": "Đặt lại mật khẩu thành công",
+  "forgot_password_success": "Yêu cầu đặt lại mật khẩu thành công vui lòng kiểm tra email {{email}}, bao gồm cả thư mục spam, thư rác."
 }

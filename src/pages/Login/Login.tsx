@@ -19,12 +19,15 @@ import InputPassword from '@/components/InputPassword/InputPassword'
 import { LoginSchema } from '@/zod/login.zod'
 import { Mail } from 'lucide-react'
 import AuthModal from './AuthModal'
+import { useParamsString } from '@/hooks/useUrlParams'
 
 export default function Login() {
   const REMEMBER = localStorage.getItem('remmberMe') || 'false'
   const [rememberMe, setRememberMe] = useState<boolean>(isEqual(REMEMBER, 'true') ? true : false)
   const { t } = useTranslation()
   const { handleErrorAPI } = useHandleError()
+  const { token } = useParamsString()
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -53,7 +56,7 @@ export default function Login() {
   }, [rememberMe, form])
   return (
     <div className='max-w-3xl mx-auto '>
-      <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xl'>
+      <div className='flex justify-center flex-col items-center min-w-2sm sm:min-w-xl md:min-w-2xl'>
         <Link to={path.home}>
           <img src={logo} alt='logo' className='hidden md:block mb-4 h-20' />
         </Link>
@@ -65,7 +68,7 @@ export default function Login() {
           </Link>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='w-10/12  space-y-2 px-4' noValidate>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='w-10/12 space-y-2 px-4' noValidate>
             <FormField
               control={form.control}
               name='email'
@@ -125,7 +128,7 @@ export default function Login() {
             </p>
           </form>
         </Form>
-        <div className=''></div>
+        {token && <AuthModal type='reset-password' token={token} />}
         <div className='w-10/12 space-y-6 px-4 pt-4 mb-10'>
           <div className='flex justify-center'>
             <div className=' flex justify-center items-center gap-3 w-1/2'>

@@ -7,7 +7,7 @@ import { path } from '../constants/path'
 import { Toast } from '@/utils/toastMessage'
 import { clearLS, setAccessTokenToLS, setRefreshTokenToLS, setUserToLS } from '@/utils/storage'
 import { User } from '@/models/interface/user.interface'
-import { useContext } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 import { AppContext } from '../contexts/app.context'
 import { SuccessResponse } from '@/models/interface/response.interface'
 import { AuthResponse } from '@/models/interface/auth.interface'
@@ -23,7 +23,7 @@ interface useLoginProps<TVariables> {
 }
 export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLoginProps<TVariables>) => {
   const { setProfile, setIsAuthenticated } = useContext(AppContext)
-  const { t } = useTranslation()
+  const { t } = useTranslation('message')
   return useMutation({
     mutationKey: mutationKeys.login,
     mutationFn: mutationFn,
@@ -39,23 +39,29 @@ export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLog
     onError: handleError
   })
 }
-
-// reset pass
-export const useResetPWMutation = (form: UseFormReturn<any>) => {
-  const { handleToastError } = useHandleError()
-  const navigate = useNavigate()
-  const email = form.getValues('email')
+// forgot password
+export const useForgotOrResetPWMutation = (
+  form: UseFormReturn<any>,
+  isForgotPW: boolean,
+  setOpen: Dispatch<SetStateAction<boolean>>,
+  token?: string
+) => {
+  const { handleErrorAPI } = useHandleError()
+  const { t } = useTranslation('message')
+  const { email, password } = form.getValues()
   return useMutation({
-    mutationKey: ['resetPass'],
-    mutationFn: () => authApi.resetPassword({ email: email }),
+    mutationKey: isForgotPW ? mutationKeys.forgotPW : mutationKeys.resetPW,
+    mutationFn: isForgotPW
+      ? () => authApi.forgotPassword({ email: email })
+      : () => authApi.resetPassword({ password, token: token as string }),
     onSuccess: () => {
       Toast.success({
-        title: 'Thành công',
-        description: `Email yêu cầu đăt lại mật khẩu đã được gửi tới ${email}, vui long kiểm tra hòm thư của bạn.`
+        description: isForgotPW ? t('forgot_password_success', { email }) : t('reset_password_success')
       })
-      navigate(path.login)
+      form.reset()
+      setOpen(false)
     },
-    onError: (error) => handleToastError(error)
+    onError: (error) => handleErrorAPI(error, form)
   })
 }
 
@@ -82,19 +88,7 @@ export const useRegisterMutation = ({ handleError }: { handleError?: (error: Axi
     onError: handleError
   })
 }
-export const useResetPassWMutation = ({ handleError }: { handleError?: (error: AxiosError) => void }) => {
-  return useMutation({
-    mutationKey: mutationKeys.register,
-    mutationFn: authApi.register,
-    onSuccess: () => {
-      Toast.success({
-        title: 'Thành công',
-        description: 'Yêu cầu đặt lại mật khẩu thành công. Vui lòng kiểm tra Mail của bạn.'
-      })
-    },
-    onError: handleError
-  })
-}
+
 //logout
 export const useLogoutMutation = () => {
   const navigate = useNavigate()

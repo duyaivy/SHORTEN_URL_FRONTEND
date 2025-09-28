@@ -126,7 +126,7 @@ axiosClient.interceptors.response.use(
 
 const logout = (): void => {
   clearLS()
-  window.location.reload()
+  window.location.href = '/a/login'
 }
 
 export default axiosClient

@@ -90,8 +90,8 @@ export default function Header() {
                             </div>
                           </NavigationMenuTrigger>
                           <NavigationMenuContent>
-                            <ul className='w-[150px] min-h-10 py-2 flex flex-col justify-center items-center gap-1'>
-                              <p className='hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer truncate'>
+                            <ul className='w-[150px] min-h-10 py-2 flex flex-col justify-center items-center gap-1 '>
+                              <p className='hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-white hover:!text-main text-sm cursor-pointer truncate'>
                                 {profile.email}
                               </p>
 

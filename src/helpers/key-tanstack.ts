@@ -7,5 +7,7 @@ export const mutationKeys = {
   getShortenUrl: ['getShortenUrl'],
   deleteUrls: ['deleteUrls'],
   changeActive: ['changeActive'],
-  updateUrl: ['updateUrl']
+  updateUrl: ['updateUrl'],
+  forgotPW: ['forgotPW'],
+  resetPW: ['resetPW']
 }

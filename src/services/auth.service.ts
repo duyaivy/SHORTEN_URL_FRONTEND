@@ -18,10 +18,8 @@ export const authApi = {
   register: (params: Omit<RegisterType, 'confirmPassword'>) => {
     return axiosClient.post<SuccessResponse<AuthResponse>>(API_REGISTER_URL, params)
   },
-  resetPassword: (params: { email?: string }) => {
-    return axiosClient.get<SuccessResponse<null>>(API_RESET_PASS_URL, {
-      params
-    })
+  resetPassword: (params: { token: string; password: string }) => {
+    return axiosClient.post<SuccessResponse<null>>(API_RESET_PASS_URL, params)
   },
   refreshToken: (token: string) => {
     return axiosClient.post<SuccessResponse<AuthResponse>>(API_REFRESH_TOKEN_URL, { token })
