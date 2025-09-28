@@ -1,0 +1,22 @@
+{
+  "error_url": "Invalid URL",
+  "url_required": "URL is required",
+  "alias_min_length": "Alias must be at least 3 characters",
+  "alias_max_length": "Alias must not exceed 30 characters",
+  "password_min_length": "Password must be at least 6 characters",
+  "password_max_length": "Password must not exceed 30 characters",
+  "return_home": "← Home",
+  "delete_url_success": "Link deleted successfully",
+  "register_success": "Registration successful",
+  "register_success_description": "Your account has been registered successfully!",
+  "login_success": "Login successful",
+  "login_success_description": "Start shortening your links now!",
+  "something_went_wrong": "Something went wrong, please try again later.",
+  "error_occurred": "An error occurred",
+  "unknown_error": "Unknown error.",
+  "change_status_url_success": "Link status changed successfully",
+  "update_url_success": "URL updated successfully",
+  "reset_password_success": "Password reset successfully",
+  "forgot_password_success": "Password reset request successful. Please check your email {{email}}, including spam/junk folder.",
+  "failed_to_login_with_google": "Failed to login with Google. Please try again later."
+}

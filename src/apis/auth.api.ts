@@ -2,8 +2,6 @@ import { mutationKeys } from '@/helpers/key-tanstack'
 import { authApi } from '@/services/auth.service'
 import { useMutation } from '@tanstack/react-query'
 import { UseFormReturn } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { path } from '../constants/path'
 import { Toast } from '@/utils/toastMessage'
 import { clearLS, setAccessTokenToLS, setRefreshTokenToLS, setUserToLS } from '@/utils/storage'
 import { User } from '@/models/interface/user.interface'
@@ -92,7 +90,6 @@ export const useRegisterMutation = ({ handleError }: { handleError?: (error: Axi
 
 //logout
 export const useLogoutMutation = () => {
-  const navigate = useNavigate()
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
   return useMutation({
     mutationKey: mutationKeys.logout,
@@ -102,7 +99,6 @@ export const useLogoutMutation = () => {
       setIsAuthenticated(false)
       clearLS()
       setProfile(null)
-      navigate(path.login)
     }
   })
 }

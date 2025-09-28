@@ -1,5 +1,6 @@
 import { Facebook, Github, Linkedin, Mail } from 'lucide-react'
-import { Button } from '../ui/button'
+
+import I18NextLanguage from '../I18NextLanguage'
 
 export default function Footer() {
   return (
@@ -14,29 +15,31 @@ export default function Footer() {
           </b>{' '}
           with love💖
         </p>
-        <ul className='flex-1 flex gap-2.5 justify-center'>
-          <li className='group'>
-            <a href='https://github.com/duyaivy' className=''>
-              <Mail className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
-            </a>
-          </li>
-          <li className='group'>
-            <a href='https://github.com/duyaivy' className=''>
-              <Github className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
-            </a>
-          </li>
-          <li className='group'>
-            <a href='https://github.com/duyaivy' className=''>
-              <Facebook className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
-            </a>
-          </li>
-          <li className='group'>
-            <a href='https://github.com/duyaivy' className=''>
-              <Linkedin className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
-            </a>
-          </li>
-        </ul>
-        <Button>English</Button>
+        <div className='flex justify-between flex-1 w-full gap-2 '>
+          <ul className='flex-1 flex gap-2.5 justify-start md:justify-center'>
+            <li className='group'>
+              <a href='mailto:quocduy0322@gmail.com' className=''>
+                <Mail className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
+              </a>
+            </li>
+            <li className='group'>
+              <a href='https://github.com/duyaivy' className=''>
+                <Github className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
+              </a>
+            </li>
+            <li className='group'>
+              <a href='https://www.facebook.com/quoc.duy.51065' className=''>
+                <Facebook className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
+              </a>
+            </li>
+            <li className='group'>
+              <a href='https://www.linkedin.com/in/qu%E1%BB%91c-duy-78444b346' className=''>
+                <Linkedin className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
+              </a>
+            </li>
+          </ul>
+          <I18NextLanguage />
+        </div>
       </div>
     </footer>
   )

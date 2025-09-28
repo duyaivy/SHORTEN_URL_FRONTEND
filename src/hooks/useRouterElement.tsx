@@ -67,16 +67,6 @@ export default function useRoutesElements() {
       ),
       children: [
         {
-          path: path.home,
-          element: (
-            <LazyComponent>
-              <Layout>
-                <HomePage />
-              </Layout>
-            </LazyComponent>
-          )
-        },
-        {
           path: path.coming_soon,
           element: (
             <LazyComponent>
