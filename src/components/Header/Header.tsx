@@ -19,7 +19,7 @@ import { logo } from '@/assets/images'
 import LinkHoverAnimate from '../LinkHoverAnimate'
 import { menuV2 } from '@/assets/icons'
 import IconAnimateClick from '../IconAnimateClick'
-import { getRefreshTokenFromLS } from '@/utils/storage'
+import { clearLS, getRefreshTokenFromLS } from '@/utils/storage'
 
 export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
@@ -31,6 +31,8 @@ export default function Header() {
     const refresh_token = getRefreshTokenFromLS()
     if (refresh_token) {
       logoutMutation.mutate(refresh_token)
+    } else {
+      clearLS()
     }
   }
 
@@ -42,7 +44,7 @@ export default function Header() {
             <div className='col-span-8 md:col-span-3 '>
               <div className='flex justify-center items-center h-full'>
                 <Link to={path.home} className='flex justify-between items-center '>
-                  <img className='w-auto h-16' src={logo} alt='logo' />
+                  <img className='w-auto h-18' src={logo} alt='logo' />
                 </Link>
               </div>
             </div>

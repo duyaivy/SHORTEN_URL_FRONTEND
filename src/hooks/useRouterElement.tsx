@@ -3,7 +3,6 @@ import { Fragment, lazy, ReactNode, useContext, Suspense } from 'react'
 import { path } from '@/constants/path'
 import { AppContext } from '@/contexts/app.context'
 import { CleanLoading } from '@/assets/videos'
-import CommingSoon from '@/pages/CommingSoon'
 import ShortenURL from '@/pages/ShortenURL'
 import ScanQR from '@/pages/ScanQR'
 import AuthLayout from '@/components/AuthLayout'
@@ -17,8 +16,6 @@ const Login = lazy(() => import('@/pages/Login'))
 const Register = lazy(() => import('@/pages/Register'))
 const PageNotFound = lazy(() => import('@/pages/404/PageNotFound'))
 const HomePage = lazy(() => import('@/pages/Home'))
-
-const AnimatedOutlet = lazy(() => import('@/components/AnimatedOutlet'))
 
 const LoadingSpinner = () => (
   <div className='flex items-center justify-center min-h-screen flex-col gap-4'>
@@ -60,22 +57,8 @@ export default function useRoutesElements() {
   const routes: RouteConfig[] = [
     {
       path: '/a',
-      element: (
-        <LazyComponent>
-          <AnimatedOutlet />
-        </LazyComponent>
-      ),
+      element: <Outlet />,
       children: [
-        {
-          path: path.coming_soon,
-          element: (
-            <LazyComponent>
-              <Layout>
-                <CommingSoon />
-              </Layout>
-            </LazyComponent>
-          )
-        },
         {
           path: path.shorten_link,
           element: (

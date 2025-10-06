@@ -31,8 +31,8 @@ export default function ControlUrls({ onCheckAll, extraUrls, onDeleteUrls, isLoa
     <div className='flex flex-col md:flex-row w-full md:items-center justify-between items-start'>
       {isLoading ? (
         <>
-          <Skeleton className='h-15 w-40' />
-          <Skeleton className='h-15 w-64' />
+          <Skeleton className='h-15 w-40 my-1' />
+          <Skeleton className='h-15 w-64  my-1' />
         </>
       ) : (
         <>

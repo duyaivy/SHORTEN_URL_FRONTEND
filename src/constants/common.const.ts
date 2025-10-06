@@ -25,7 +25,7 @@ export const ACTION_URL_REGEX = /^(\/?rpc)/
  */
 export const EMPTY_STRING = '---'
 export const TIME_FORMAT = 'HH:mm'
-
+export const DATETIME_FORMAT = 'HH:mm - DD/MM/YYYY'
 export const DAY_TYPE = 'day'
 // config type text
 export const TEXT_TYPE = 'text'

@@ -17,7 +17,7 @@ import { queryKeys } from '@/helpers/key-tanstack'
 import ReCAPTCHA from 'react-google-recaptcha'
 import config from '@/constants/config.const'
 import { Toast } from '@/utils/toastMessage'
-
+import { motion } from 'framer-motion'
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
@@ -60,7 +60,12 @@ export default function ShortenURL() {
     form.reset()
   }
   return (
-    <div className='max-w-3xl mx-auto '>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className='max-w-3xl mx-auto '
+    >
       <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xl'>
         <h1 className='text-xl md:text-3xl font-semibold  mb-2'>{t('shorten_link')}</h1>
         <p className='text-center text-white mb-6 text-muted-foreground'>{t('shorten_link_description')}</p>
@@ -119,7 +124,6 @@ export default function ShortenURL() {
                 )}
               />
             )}
-            <ReCAPTCHA ref={recaptchaRef} size='invisible' sitekey={config.siteKeyCapcha} />
             <div className='flex w-full gap-2 items-center my-10'>
               <Button
                 type='reset'
@@ -144,6 +148,7 @@ export default function ShortenURL() {
           short_url={shortenLinkMutation.data?.data.data.short_url}
         />
       )}
-    </div>
+      <ReCAPTCHA hidden ref={recaptchaRef} size='invisible' sitekey={config.siteKeyCapcha} />
+    </motion.div>
   )
 }
