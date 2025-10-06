@@ -76,5 +76,6 @@
   "require_text_all": "{{count}} URLs",
   "update_url_title": "Update URL",
   "update_url_description": "Update the URL information below. Enter a new password or leave it blank if you don’t want to set a password for this link.",
-  "update": "Update"
+  "update": "Update",
+  "total": "Total:"
 }

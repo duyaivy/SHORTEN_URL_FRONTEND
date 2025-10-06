@@ -29,9 +29,9 @@ export default class ErrorBoundary extends Component<Props, State> {
         <div className='flex flex-col items-center justify-center h-screen bg-white text-center p-6'>
           <h1 className='text-7xl font-semibold text-gray-800 mb-2'>500</h1>
           <h2 className='text-2xl font-semibold text-gray-800 mb-2'>Internal Server Error</h2>
-          <p className='text-gray-600 mb-4'>Đã có sự cố xảy ra. Vui lòng thử lại sau.</p>
-          <a href={path.home} className='px-4 py-2 bg-main text-white rounded hover:bg-main/80 transition'>
-            Về trang chủ
+          <p className='text-gray-600 mb-4'>Some thing went wrong! Try again later.</p>
+          <a href={path.home} className='px-4 py-2 text-white rounded transition'>
+            Go to home
           </a>
         </div>
       )

@@ -3,3 +3,6 @@ export type UrlType = {
   alias: string
   password?: string
 }
+export type QrHistory = {
+  decoded: string
+}

@@ -25,16 +25,15 @@ export const ACTION_URL_REGEX = /^(\/?rpc)/
  */
 export const EMPTY_STRING = '---'
 export const TIME_FORMAT = 'HH:mm'
-// type day
-export const DAY_TYPE = 'day'
 
+export const DAY_TYPE = 'day'
 // config type text
 export const TEXT_TYPE = 'text'
 export const NUMBER_TYPE = 'number'
 export const PASSWORD_TYPE = 'password'
 
 // config time
-export const STATE_TIME = 60 * 1000 * 3
+export const STATE_TIME = 60 * 1000 * 2
 export const DEFAULT_DATE_OF_BIRTH = '2000-01-01'
 export const VND_CURRENCY_UNIT = 'VND'
 

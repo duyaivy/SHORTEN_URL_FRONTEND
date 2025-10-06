@@ -15,7 +15,7 @@ export const useUrlsQueryConfig = () => {
   const queryConfig: QueryUrlsConfig = omitBy(
     {
       page: queryString.page || '1',
-      limit: queryString.limit || '15',
+      limit: queryString.limit || '8',
       search: queryString.search || ''
     },
     isUndefined

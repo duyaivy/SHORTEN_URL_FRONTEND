@@ -9,5 +9,13 @@ export const mutationKeys = {
   changeActive: ['changeActive'],
   updateUrl: ['updateUrl'],
   forgotPW: ['forgotPW'],
-  resetPW: ['resetPW']
+  resetPW: ['resetPW'],
+  saveQrHistory: ['saveQrHistory'],
+  deleteQrHistory: ['deleteQrHistory'],
+  recapcha: ['recapcha']
+}
+export const queryKeys = {
+  myUrls: 'myUrls',
+  qrHistory: 'qrHistory',
+  alias: 'alias'
 }

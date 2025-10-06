@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 import { Toast } from '@/utils/toastMessage'
 import OutputAfterHandle from '@/components/OutputAfterHandle'
+import { useSaveQrHistoryMutation } from '@/apis/url.api'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/helpers/key-tanstack'
 interface Value {
   link: string
   date: Date
@@ -16,6 +19,15 @@ export default function ScanQR() {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [value, setValue] = useState<Value>({ link: '', date: new Date() })
+  const queryClient = useQueryClient()
+  const saveQrHistoryMutation = useSaveQrHistoryMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.qrHistory] })
+    },
+    onError: () => {
+      Toast.error({ description: t('cannot_save_qr_history') })
+    }
+  })
   useEffect(() => {
     if (!html5QrCodeRef.current) {
       html5QrCodeRef.current = new Html5Qrcode('reader')
@@ -45,6 +57,7 @@ export default function ScanQR() {
           },
           (decodedText) => {
             setValue({ link: decodedText, date: new Date() })
+            saveQrHistoryMutation.mutate({ decoded: decodedText })
             html5QrCodeRef.current?.stop().catch(() => {})
           },
           () => {
@@ -56,6 +69,7 @@ export default function ScanQR() {
         )
         .catch((err) => {
           if (String(err).includes('Permission denied')) {
+            // xuli loi
             Toast.error({ description: t('camera_permission_denied') })
           } else {
             Toast.error({ description: t('cannot_detect_qr_code') })
@@ -76,6 +90,7 @@ export default function ScanQR() {
         .scanFile(file, true)
         .then((result) => {
           setValue({ link: result, date: new Date() })
+          saveQrHistoryMutation.mutate({ decoded: result })
         })
         .catch(() => {
           Toast.error({ description: t('cannot_detect_qr_code') })

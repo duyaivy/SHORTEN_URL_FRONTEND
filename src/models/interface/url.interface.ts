@@ -23,3 +23,13 @@ export interface GetPaginationConfig {
   limit?: number
   search?: string
 }
+
+export interface QrHistory {
+  decoded?: string
+  _id?: string
+  created_at?: string
+  date?: string
+}
+export interface ExtraQrHistory extends QrHistory {
+  isCheck: boolean
+}

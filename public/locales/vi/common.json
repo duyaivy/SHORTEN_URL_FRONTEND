@@ -69,12 +69,14 @@
   "next": "Tiếp",
   "previous": "Trước",
   "cancel": "Hủy",
-  "delete": "Xóa",
+  "delete": "Xoá",
   "confirm_delete_placeholder": "Nhập...",
   "confirm_delete_description": "Để xác nhận xóa, vui lòng nhập \"{{requiredText}}\" vào ô bên dưới.",
   "confirm_delete_title": "Xác nhận xóa",
   "require_text_all": "{{count}} URLs",
   "update_url_title": "Cập nhật URL",
   "update_url_description": "Cập nhật thông tin URL bên dưới. Vui lòng nhập mật khẩu mới hoặc để trống nếu không muốn cài mật khẩu cho liên kết.",
-  "update": "Cập nhật"
+  "update": "Cập nhật",
+  "no_urls": "Chưa có liên kết nào được tạo.",
+  "total": "Tổng:"
 }

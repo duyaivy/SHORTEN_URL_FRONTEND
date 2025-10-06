@@ -11,13 +11,14 @@ import ControlUrls from './ControlUrls/ControlUrls'
 import { useQueryClient } from '@tanstack/react-query'
 import { SuccessResponse } from '@/models/interface/response.interface'
 import { AxiosResponse } from 'axios'
+import { queryKeys } from '@/helpers/key-tanstack'
 
 export default function MyURL() {
   const { t } = useTranslation(['common', 'message'])
   const queryClient = useQueryClient()
   const queryString = useUrlsQueryConfig()
   const { page, limit } = queryString
-  const { data: myUrls } = useQueryMyUrls(queryString as GetPaginationConfig)
+  const { data: myUrls, isLoading } = useQueryMyUrls(queryString as GetPaginationConfig)
   const control = myUrls?.data.data.control
 
   const [extraUrls, setExtraUrls] = useState<ExtraURL[]>(() => {
@@ -42,9 +43,7 @@ export default function MyURL() {
   })
   const useDeleteMutation = useDeleteUrlsMutation({
     onSuccess: () => {
-      // Handle successful deletion
-      Toast.success({ description: t('message:delete_url_success') })
-      queryClient.invalidateQueries({ queryKey: ['myUrls', queryString] })
+      queryClient.invalidateQueries({ queryKey: [queryKeys.myUrls, queryString] })
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
@@ -53,10 +52,6 @@ export default function MyURL() {
     }
   })
   const useChangeStatusMutation = useChangeActiveMutation({
-    onSuccess: () => {
-      // Handle successful deletion
-      Toast.success({ description: t('message:change_status_url_success') })
-    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       // Handle error
@@ -119,8 +114,14 @@ export default function MyURL() {
       '
       >
         {/* control */}
-        <ControlUrls extraUrls={extraUrls} onCheckAll={handleCheckAll} onDeleteUrls={handleDeleteUrlsChecked} />
+        <ControlUrls
+          isLoading={isLoading}
+          extraUrls={extraUrls}
+          onCheckAll={handleCheckAll}
+          onDeleteUrls={handleDeleteUrlsChecked}
+        />
         <ManageUrls
+          isLoading={isLoading}
           handleChangeStatus={handleChangeStatus}
           myUrls={extraUrls}
           isChangingStatus={useChangeStatusMutation.isPending}

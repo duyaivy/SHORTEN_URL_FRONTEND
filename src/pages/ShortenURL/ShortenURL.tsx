@@ -1,4 +1,4 @@
-import { useShortenUrlMutation } from '@/apis/url.api'
+import { useRecapchaMutation, useShortenUrlMutation } from '@/apis/url.api'
 import InputPassword from '@/components/InputPassword/InputPassword'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -8,14 +8,26 @@ import { useHandleError } from '@/utils/handleErrorAPI'
 import { ShortenURLSchema, ShortenURLSchemaType } from '@/zod/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ExternalLink, Link2 } from 'lucide-react'
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import ReturnValue from './ReturnValue'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/helpers/key-tanstack'
+import ReCAPTCHA from 'react-google-recaptcha'
+import config from '@/constants/config.const'
+import { Toast } from '@/utils/toastMessage'
 
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
+  const queryClient = useQueryClient()
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
+  const useRecaptcha = useRecapchaMutation({
+    onError: (error: any) => {
+      Toast.error({ description: error.response?.data.message })
+    }
+  })
   const form = useForm<ShortenURLSchemaType>({
     resolver: zodResolver(ShortenURLSchema()),
     defaultValues: {
@@ -26,11 +38,23 @@ export default function ShortenURL() {
   })
   const { handleErrorAPI } = useHandleError()
   const shortenLinkMutation = useShortenUrlMutation({
-    onError: (error) => handleErrorAPI(error, form)
+    onError: (error) => handleErrorAPI(error, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.myUrls] })
+    }
   })
-  const handleSubmit = () => {
-    const data = { ...form.getValues(), password: form.getValues('password') || undefined }
-    shortenLinkMutation.mutate(data)
+  const handleSubmit = async () => {
+    const recapchaValue = await recaptchaRef.current?.executeAsync()
+    recaptchaRef.current?.reset()
+    if (recapchaValue) {
+      try {
+        await useRecaptcha.mutateAsync(recapchaValue)
+        const data = { ...form.getValues(), password: form.getValues('password') || undefined }
+        shortenLinkMutation.mutate(data)
+      } catch (error: any) {
+        Toast.error({ description: error.response?.data.message })
+      }
+    }
   }
   const handleReset = () => {
     form.reset()
@@ -95,6 +119,7 @@ export default function ShortenURL() {
                 )}
               />
             )}
+            <ReCAPTCHA ref={recaptchaRef} size='invisible' sitekey={config.siteKeyCapcha} />
             <div className='flex w-full gap-2 items-center my-10'>
               <Button
                 type='reset'

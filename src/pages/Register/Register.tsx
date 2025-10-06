@@ -13,14 +13,16 @@ import { useRegisterMutation } from '@/apis/auth.api'
 import InputPassword from '@/components/InputPassword/InputPassword'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { RegisterSchema } from '@/zod/register.zod'
+
 import { Mail } from 'lucide-react'
 import { logo } from '@/assets/images'
 import { useHandleError } from '@/utils/handleErrorAPI'
+import { useRegisterSchema } from '@/zod/register.zod'
 
 export default function Register() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { RegisterSchema } = useRegisterSchema()
   const { handleErrorAPI } = useHandleError()
   const [isConfirm, setIsconfirm] = useState<boolean>(false)
   const form = useForm<z.infer<typeof RegisterSchema>>({

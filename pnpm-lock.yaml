@@ -92,6 +92,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.15
         version: 4.17.20
+      '@types/react-google-recaptcha':
+        specifier: ^2.1.9
+        version: 2.1.9
       add:
         specifier: ^2.0.6
         version: 2.0.6
@@ -117,7 +120,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       dayjs:
-        specifier: ^1.11.13
+        specifier: ^1.11.18
         version: 1.11.18
       dlx:
         specifier: ^0.2.1
@@ -182,6 +185,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-google-recaptcha:
+        specifier: ^3.1.0
+        version: 3.1.0(react@18.3.1)
       react-helmet-async:
         specifier: ^2.0.5
         version: 2.0.5(react@18.3.1)
@@ -1774,6 +1780,9 @@ packages:
     resolution: {integrity: sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==}
     peerDependencies:
       '@types/react': ^19.0.0
+
+  '@types/react-google-recaptcha@2.1.9':
+    resolution: {integrity: sha512-nT31LrBDuoSZJN4QuwtQSF3O89FVHC4jLhM+NtKEmVF5R1e8OY0Jo4//x2Yapn2aNHguwgX5doAq8Zo+Ehd0ug==}
 
   '@types/react-scroll@1.8.10':
     resolution: {integrity: sha512-RD4Z7grbdNGOKwKnUBKar6zNxqaW3n8m9QSrfvljW+gmkj1GArb8AFBomVr6xMOgHPD3v1uV3BrIf01py57daQ==}
@@ -3648,6 +3657,11 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
+  react-async-script@1.2.0:
+    resolution: {integrity: sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==}
+    peerDependencies:
+      react: '>=16.4.1'
+
   react-countup@6.5.3:
     resolution: {integrity: sha512-udnqVQitxC7QWADSPDOxVWULkLvKUWrDapn5i53HE4DPRVgs+Y5rr4bo25qEl8jSh+0l2cToJgGMx+clxPM3+w==}
     peerDependencies:
@@ -3666,6 +3680,11 @@ packages:
 
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
+
+  react-google-recaptcha@3.1.0:
+    resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
+    peerDependencies:
+      react: '>=16.4.1'
 
   react-helmet-async@2.0.5:
     resolution: {integrity: sha512-rYUYHeus+i27MvFE+Jaa4WsyBKGkL6qVgbJvSBoX8mbsWoABJXdEO0bZyi0F6i+4f0NuIb8AvqPMj3iXFHkMwg==}
@@ -5908,6 +5927,10 @@ snapshots:
     dependencies:
       '@types/react': 19.1.13
 
+  '@types/react-google-recaptcha@2.1.9':
+    dependencies:
+      '@types/react': 19.1.13
+
   '@types/react-scroll@1.8.10':
     dependencies:
       '@types/react': 19.1.13
@@ -7860,6 +7883,12 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-async-script@1.2.0(react@18.3.1):
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      prop-types: 15.8.1
+      react: 18.3.1
+
   react-countup@6.5.3(react@18.3.1):
     dependencies:
       countup.js: 2.9.0
@@ -7877,6 +7906,12 @@ snapshots:
       scheduler: 0.23.2
 
   react-fast-compare@3.2.2: {}
+
+  react-google-recaptcha@3.1.0(react@18.3.1):
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-async-script: 1.2.0(react@18.3.1)
 
   react-helmet-async@2.0.5(react@18.3.1):
     dependencies:

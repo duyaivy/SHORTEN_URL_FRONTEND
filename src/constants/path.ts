@@ -7,7 +7,7 @@ export const path = {
   shorten_link: '/a/shorten-url',
   notFound: '/a/404',
   my_url: '/a/my-url',
-  history: '/a/history',
+  history: '/a/qr-history',
   get_alias: '/:alias',
   get_alias_with_pw: '/password/:alias'
 }
