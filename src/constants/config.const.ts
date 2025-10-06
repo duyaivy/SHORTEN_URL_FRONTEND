@@ -1,4 +1,3 @@
-
 const config = {
   baseUrl: import.meta.env.VITE_API_URL || '',
   maxSizeUploadAvatar: 1048576 * 2,
@@ -6,7 +5,7 @@ const config = {
   redirectUri: import.meta.env.VITE_REDIRECT_URI || '',
   secrectClient: import.meta.env.VITE_CLIENT_SECRECT || '',
   googleURL: import.meta.env.VITE_GOOGLE_URL || '',
-  siteKeyCapcha: import.meta.env.VITE_SITE_KEY_CAPCHA || '',
+  siteKeyCapcha: import.meta.env.VITE_SITE_KEY_CAPCHA || ''
 }
 
 export default config

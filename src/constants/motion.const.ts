@@ -1,5 +1,4 @@
-import { easeOut } from "framer-motion"
-
+import { easeOut } from 'framer-motion'
 
 export const container = {
   hidden: { opacity: 0 },
