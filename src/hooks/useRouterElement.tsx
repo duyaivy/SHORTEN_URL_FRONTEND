@@ -2,13 +2,13 @@ import { Navigate, Outlet, RouteObject, useLocation, useRoutes } from 'react-rou
 import { Fragment, lazy, ReactNode, useContext, Suspense } from 'react'
 import { path } from '@/constants/path'
 import { AppContext } from '@/contexts/app.context'
-import { CleanLoading } from '@/assets/videos'
 import ShortenURL from '@/pages/ShortenURL'
 import ScanQR from '@/pages/ScanQR'
 import AuthLayout from '@/components/AuthLayout'
 import HistoryQr from '@/pages/HistoryQr'
 import AliasFetch from '@/pages/GetLink/AliasFetch'
 import AliasFetchWithPW from '@/pages/GetLink/AliasFetchWithPW'
+import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner'
 // Lazy load all components
 const MyURL = lazy(() => import('@/pages/MyURL'))
 const Layout = lazy(() => import('@/components/Layout'))
@@ -16,15 +16,6 @@ const Login = lazy(() => import('@/pages/Login'))
 const Register = lazy(() => import('@/pages/Register'))
 const PageNotFound = lazy(() => import('@/pages/404/PageNotFound'))
 const HomePage = lazy(() => import('@/pages/Home'))
-
-const LoadingSpinner = () => (
-  <div className='flex items-center justify-center min-h-screen flex-col gap-4'>
-    <video autoPlay loop muted className='size-80 object-cover'>
-      <source src={CleanLoading} type='video/mp4' />
-    </video>
-    <h1 className='text-2xl font-bold'>Loading...</h1>
-  </div>
-)
 
 const LazyComponent = ({ children }: { children: ReactNode }) => (
   <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { StrictMode } from 'react'
+
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
@@ -12,6 +12,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import ErrorBoundary from './components/ErrorBoundary'
 import i18n from './constants/i18n.ts'
 import { I18nextProvider } from 'react-i18next'
+import { StrictMode } from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: {

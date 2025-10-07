@@ -18,6 +18,8 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import config from '@/constants/config.const'
 import { Toast } from '@/utils/toastMessage'
 import { motion } from 'framer-motion'
+import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner'
+import LoginNowDialog from '../Login/LoginNowDialog'
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
@@ -131,13 +133,28 @@ export default function ShortenURL() {
               >
                 {t('clear')}
               </Button>
-              <Button
-                loading={shortenLinkMutation.isPending}
-                className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
-                type='submit'
-              >
-                {t('shorten_link')}
-              </Button>
+              {!isAuthenticated ? (
+                <LoginNowDialog
+                  handleEvent={() => handleSubmit()}
+                  trigger={
+                    <Button
+                      type='button'
+                      loading={shortenLinkMutation.isPending}
+                      className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
+                    >
+                      {t('shorten_link')}
+                    </Button>
+                  }
+                />
+              ) : (
+                <Button
+                  loading={shortenLinkMutation.isPending}
+                  type='submit'
+                  className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
+                >
+                  {t('shorten_link')}
+                </Button>
+              )}
             </div>
           </form>
         </Form>
@@ -148,6 +165,7 @@ export default function ShortenURL() {
           short_url={shortenLinkMutation.data?.data.data.short_url}
         />
       )}
+      {shortenLinkMutation.isPending && <LoadingSpinner />}
       <ReCAPTCHA hidden ref={recaptchaRef} size='invisible' sitekey={config.siteKeyCapcha} />
     </motion.div>
   )

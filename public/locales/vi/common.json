@@ -78,5 +78,17 @@
   "update_url_description": "Cập nhật thông tin URL bên dưới. Vui lòng nhập mật khẩu mới hoặc để trống nếu không muốn cài mật khẩu cho liên kết.",
   "update": "Cập nhật",
   "no_urls": "Chưa có liên kết nào được tạo.",
-  "total": "Tổng:"
+  "total": "Tổng:",
+  "login_feature_history": "Lưu lịch sử quét mã QR của bạn.",
+  "login_feature_edit_link": "Có thể quản lý và chỉnh sửa liên kết.",
+  "login_feature_password": "Được phép sử dụng mật khẩu để bảo vệ liên kết.",
+  "login_feature_unlimited_time": "Không giới hạn thời gian tồn tại của liên kết.",
+  "guest_feature_history": "Không lưu lịch sử quét mã QR.",
+  "guest_feature_edit": "Không thể chỉnh sửa liên kết.",
+  "guest_feature_2weeks": "Liên kết rút gọn chỉ có thể truy cập trong 2 tuần.",
+  "continue_as_guest": "Tiếp tục với tư cách khách",
+  "login_now_title": "Khoan, chờ đã!",
+  "login_now_description": "Đăng nhập ngay để sử dụng đầy đủ tính năng của chúng tôi.",
+  "login_title": "Đăng nhập",
+  "guest_title": "Khách"
 }
