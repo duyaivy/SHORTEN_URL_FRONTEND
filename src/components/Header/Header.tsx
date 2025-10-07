@@ -20,6 +20,7 @@ import LinkHoverAnimate from '../LinkHoverAnimate'
 import { menuV2 } from '@/assets/icons'
 import IconAnimateClick from '../IconAnimateClick'
 import { clearLS, getRefreshTokenFromLS } from '@/utils/storage'
+import LoginNowDialog from '@/pages/Login/LoginNowDialog'
 
 export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
@@ -64,14 +65,34 @@ export default function Header() {
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                       <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                          <Link to={path.my_url}>{t('my_url')}</Link>
-                        </NavigationMenuLink>
+                        {isAuthenticated ? (
+                          <NavigationMenuLink asChild>
+                            <Link to={path.my_url}>{t('my_url')}</Link>
+                          </NavigationMenuLink>
+                        ) : (
+                          <LoginNowDialog
+                            trigger={
+                              <NavigationMenuLink asChild>
+                                <p>{t('my_url')}</p>
+                              </NavigationMenuLink>
+                            }
+                          />
+                        )}
                       </NavigationMenuItem>
                       <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                          <Link to={path.history}>{t('history')}</Link>
-                        </NavigationMenuLink>
+                        {isAuthenticated ? (
+                          <NavigationMenuLink asChild>
+                            <Link to={path.history}>{t('history')}</Link>
+                          </NavigationMenuLink>
+                        ) : (
+                          <LoginNowDialog
+                            trigger={
+                              <NavigationMenuLink asChild>
+                                <p>{t('history')}</p>
+                              </NavigationMenuLink>
+                            }
+                          />
+                        )}
                       </NavigationMenuItem>
                     </NavigationMenuList>
                   </NavigationMenu>

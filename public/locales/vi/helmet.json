@@ -1,0 +1,28 @@
+{
+  "titles": {
+    "/": "Trang Chủ | ShortLink",
+    "/a/my-url": "Quản lý Link | ShortLink",
+    "/a/scan-qr": "Quét mã QR | ShortLink",
+    "/a/shorten-url": "Rút gọn Link | ShortLink",
+    "/a/coming-soon": "Sắp ra mắt | ShortLink",
+    "/a/not-found": "Trang không tìm thấy | ShortLink",
+    "/a/login": "Đăng nhập | ShortLink",
+    "/a/register": "Đăng ký | ShortLink",
+    "/a/qr-history": "Lịch sử QR | ShortLink",
+    "/:alias": "Truy cập liên kết | ShortLink",
+    "/password/:alias": "Liên kết được bảo vệ | ShortLink"
+  },
+  "descriptions": {
+    "/": "ShortLink - Dịch vụ rút gọn link thông minh, an toàn, nhanh chóng.",
+    "/a/my-url": "Quản lý link rút gọn của bạn dễ dàng với ShortLink.",
+    "/a/scan-qr": "Quét mã QR nhanh chóng và lưu lịch sử với ShortLink.",
+    "/a/shorten-url": "Tạo link rút gọn tuỳ chỉnh, có mật khẩu và thời gian sống vô hạn.",
+    "/a/coming-soon": "Các tính năng mới sắp ra mắt trên ShortLink.",
+    "/a/not-found": "Trang không tồn tại hoặc đã bị xoá trên ShortLink.",
+    "/a/login": "Đăng nhập để truy cập các tính năng nâng cao của ShortLink.",
+    "/a/qr-history": "Xem và quản lý lịch sử mã QR của bạn với ShortLink.",
+    "/a/register": "Đăng ký tài khoản để trải nghiệm dịch vụ rút gọn link miễn phí và bảo mật.",
+    "/password/:alias": "Nhập mật khẩu để truy cập link rút gọn an toàn từ ShortLink.",
+    "/:alias": "Truy cập link rút gọn nhanh chóng và an toàn với ShortLink."
+  }
+}

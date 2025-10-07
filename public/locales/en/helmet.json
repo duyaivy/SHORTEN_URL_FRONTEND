@@ -1,0 +1,22 @@
+{
+  "titles": {
+    "/": "Home - ShortLink",
+    "/my-url": "Manage Links - ShortLink",
+    "/scan-qr": "Scan QR - ShortLink",
+    "/shorten-link": "Shorten URL - ShortLink",
+    "/coming-soon": "Coming Soon - ShortLink",
+    "/not-found": "Page Not Found - ShortLink",
+    "/login": "Login - ShortLink",
+    "/register": "Register - ShortLink"
+  },
+  "descriptions": {
+    "/": "ShortLink - Smart, secure and fast link shortener.",
+    "/my-url": "Easily manage your shortened URLs with ShortLink.",
+    "/scan-qr": "Quickly scan QR codes and save your scan history.",
+    "/shorten-link": "Create custom, password-protected short links with unlimited lifetime.",
+    "/coming-soon": "Upcoming features and updates on ShortLink.",
+    "/not-found": "This page does not exist or has been removed.",
+    "/login": "Log in to access advanced ShortLink features.",
+    "/register": "Create an account to enjoy ShortLink’s free and secure services."
+  }
+}

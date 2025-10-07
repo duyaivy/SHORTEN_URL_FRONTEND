@@ -8,7 +8,7 @@ i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    ns: ['common', 'message'],
+    ns: ['common', 'message', 'helmet'],
     defaultNS: 'common',
     lng: localStorage.getItem('i18nextLng') || 'vi',
     fallbackLng: 'vi',
