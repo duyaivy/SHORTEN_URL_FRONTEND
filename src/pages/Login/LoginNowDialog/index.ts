@@ -1,3 +1,3 @@
-import LoginNowDialog from "./LoginNowDialog";
+import LoginNowDialog from './LoginNowDialog'
 
 export default LoginNowDialog
