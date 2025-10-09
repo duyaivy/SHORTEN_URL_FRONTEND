@@ -26,6 +26,7 @@ export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
   const { t } = useTranslation()
   const [isShow, setIsShow] = useState<boolean>(false)
+  console.log(profile)
 
   const logoutMutation = useLogoutMutation()
   const handleLogout = () => {
