@@ -1,6 +1,6 @@
 import { ICON_SIZE_MEDIUM } from '@/constants/icon-size'
+import { IconSvgProps } from '@/models/types/icon.types'
 
-import { IconSvgProps } from '@/constants/IconSvgProps'
 import { cn } from '@/utils/lib'
 
 export const IconArrowUp = (props: IconSvgProps) => {
