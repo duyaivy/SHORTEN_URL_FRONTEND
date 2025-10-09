@@ -3,12 +3,12 @@ import { ResponseWithPagination, SuccessResponse } from '@/models/interface/resp
 import { QrHistory, UrlType } from '@/models/types/url.type'
 import { GetPaginationConfig, URL, UrlMiniUpdate } from '@/models/interface/url.interface'
 
-const API_GET_URL = '/api/'
+const API_GET_URL = '/view/'
 const API_URL = '/'
 const API_MY_URLS = '/my-urls'
 const API_CHANGE_ACTIVE_URL = '/my-urls/active'
 const API_HISTORY_URLS = '/qr-history'
-const API_RECAPTCHA = '/api/recaptcha'
+const API_RECAPTCHA = '/view/recaptcha'
 export const urlApi = {
   shortenUrl: (params: UrlType) => {
     return axiosClient.post<SuccessResponse<URL>>(API_URL, params)
