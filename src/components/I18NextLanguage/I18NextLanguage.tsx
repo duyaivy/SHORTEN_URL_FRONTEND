@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '../ui/select'
 import { useTranslation } from 'react-i18next'
 
 const languages = [
@@ -11,13 +11,12 @@ export default function I18NextLanguage() {
 
   const onChange = (value: string) => {
     i18n.changeLanguage(value)
-    console.log('Language changed:', value)
   }
 
   return (
     <Select value={i18n.language} onValueChange={onChange}>
-      <SelectTrigger className='w-30'>
-        <SelectValue placeholder={languages.find((lang) => lang.value === i18n.language)?.label} />
+      <SelectTrigger aria-label='select_language' className='w-30'>
+        {languages.find((lang) => lang.value === i18n.language)?.label}
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

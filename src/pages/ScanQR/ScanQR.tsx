@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CameraIcon, ImageUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 import { Toast } from '@/utils/toastMessage'
 import OutputAfterHandle from '@/components/OutputAfterHandle'
@@ -10,12 +9,14 @@ import { useSaveQrHistoryMutation } from '@/apis/url.api'
 import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/helpers/key-tanstack'
 import { motion } from 'framer-motion'
+import { AppContext } from '@/contexts/app.context'
 interface Value {
   link: string
   date: Date
 }
 export default function ScanQR() {
   const { t } = useTranslation()
+  const { isAuthenticated } = useContext(AppContext)
   let dateNow = new Date()
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -29,6 +30,9 @@ export default function ScanQR() {
       Toast.error({ description: t('cannot_save_qr_history') })
     }
   })
+  const handlePasteImage = useCallback((file: File) => {
+    scanImageFile(file)
+  }, [])
   useEffect(() => {
     if (!html5QrCodeRef.current) {
       html5QrCodeRef.current = new Html5Qrcode('reader')
@@ -63,7 +67,7 @@ export default function ScanQR() {
         }
       })()
     }
-  }, [])
+  }, [handlePasteImage])
   const handleScan = () => {
     if (html5QrCodeRef.current) {
       html5QrCodeRef.current
@@ -105,7 +109,7 @@ export default function ScanQR() {
     try {
       const result = await html5QrCode.scanFile(file, true)
       setValue({ link: result, date: new Date() })
-      saveQrHistoryMutation.mutate({ decoded: result })
+      if (isAuthenticated) saveQrHistoryMutation.mutate({ decoded: result })
     } catch (error) {
       console.error(error)
       Toast.error({ description: t('cannot_detect_qr_code') })
@@ -118,9 +122,7 @@ export default function ScanQR() {
     if (file) scanImageFile(file)
     if (event.target) event.target.value = ''
   }
-  const handlePasteImage = (file: File) => {
-    scanImageFile(file)
-  }
+
   return (
     <>
       <motion.div

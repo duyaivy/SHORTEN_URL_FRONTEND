@@ -56,7 +56,6 @@ export default function MyURL() {
     onError: (error: any) => {
       // Handle error
       Toast.error({ description: error.response?.data.message || t('message:something_went_wrong') })
-      console.log(error)
     }
   })
   useEffect(() => {
