@@ -70,8 +70,6 @@ export default function ManageQr({
                   <ConfirmDeleteDialog
                     requiredText={t('delete')}
                     onConfirm={() => {
-                      console.log(history._id)
-
                       handleDelete?.(history._id as string)
                     }}
                   >

@@ -2,14 +2,15 @@ import { Navigate, Outlet, RouteObject, useLocation, useRoutes } from 'react-rou
 import { Fragment, lazy, ReactNode, useContext, Suspense } from 'react'
 import { path } from '@/constants/path'
 import { AppContext } from '@/contexts/app.context'
-import ShortenURL from '@/pages/ShortenURL'
-import ScanQR from '@/pages/ScanQR'
-import AuthLayout from '@/components/AuthLayout'
-import HistoryQr from '@/pages/HistoryQr'
-import AliasFetch from '@/pages/GetLink/AliasFetch'
-import AliasFetchWithPW from '@/pages/GetLink/AliasFetchWithPW'
-import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner'
+
 // Lazy load all components
+const ShortenURL = lazy(() => import('@/pages/ShortenURL'))
+const ScanQR = lazy(() => import('@/pages/ScanQR'))
+const AuthLayout = lazy(() => import('@/components/AuthLayout'))
+const HistoryQr = lazy(() => import('@/pages/HistoryQr'))
+const AliasFetch = lazy(() => import('@/pages/GetLink/AliasFetch'))
+const AliasFetchWithPW = lazy(() => import('@/pages/GetLink/AliasFetchWithPW'))
+const LoadingSpinner = lazy(() => import('@/components/LoadingSpinner'))
 const MyURL = lazy(() => import('@/pages/MyURL'))
 const Layout = lazy(() => import('@/components/Layout'))
 const Login = lazy(() => import('@/pages/Login'))

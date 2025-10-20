@@ -26,7 +26,6 @@ export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
   const { t } = useTranslation()
   const [isShow, setIsShow] = useState<boolean>(false)
-  console.log(profile)
 
   const logoutMutation = useLogoutMutation()
   const handleLogout = () => {
@@ -115,15 +114,17 @@ export default function Header() {
                           </NavigationMenuTrigger>
                           <NavigationMenuContent>
                             <ul className='w-[150px] min-h-10 py-2 flex flex-col justify-center items-center gap-1 '>
-                              <p className='hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-white hover:!text-main text-sm cursor-pointer truncate'>
+                              <p className='hover:bg-main/10 w-full cursor-default rounded-[2px] py-1 text-center text-white hover:!text-main text-sm  truncate'>
                                 {profile.email}
                               </p>
-
-                              <ListItem to={path.login}>
-                                <button onClick={handleLogout} className='cursor-pointer font-semibold'>
-                                  {t('logout')}
-                                </button>
-                              </ListItem>
+                              <li
+                                onClick={handleLogout}
+                                className={
+                                  'hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer'
+                                }
+                              >
+                                <span className='cursor-pointer font-semibold'>{t('logout')}</span>
+                              </li>
                             </ul>
                           </NavigationMenuContent>
                         </NavigationMenuItem>
@@ -189,14 +190,12 @@ export default function Header() {
             </ListItem>
 
             {isAuthenticated && profile ? (
-              <ListItem to={path.login}>
-                <button
-                  onClick={handleLogout}
-                  className='w-full text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'
-                >
-                  {profile.email + ' | ' + t('logout')}
-                </button>
-              </ListItem>
+              <li
+                onClick={handleLogout}
+                className='w-full text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'
+              >
+                {profile.email + ' | ' + t('logout')}
+              </li>
             ) : (
               <ListItem to={path.login}>
                 <p className='text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'>

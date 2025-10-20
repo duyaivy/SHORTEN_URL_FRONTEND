@@ -18,22 +18,22 @@ export default function Footer() {
         <div className='flex justify-between flex-1 w-full gap-2 '>
           <ul className='flex-1 flex gap-2.5 justify-start md:justify-center'>
             <li className='group'>
-              <a href='mailto:quocduy0322@gmail.com' className=''>
+              <a href='mailto:quocduy0322@gmail.com' aria-label='Email'>
                 <Mail className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://github.com/duyaivy' className=''>
+              <a href='https://github.com/duyaivy' aria-label='GitHub'>
                 <Github className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://www.facebook.com/quoc.duy.51065' className=''>
+              <a href='https://www.facebook.com/quoc.duy.51065' aria-label='Facebook'>
                 <Facebook className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://www.linkedin.com/in/qu%E1%BB%91c-duy-78444b346' className=''>
+              <a href='https://www.linkedin.com/in/qu%E1%BB%91c-duy-78444b346' aria-label='LinkedIn'>
                 <Linkedin className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>

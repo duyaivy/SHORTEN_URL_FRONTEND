@@ -137,7 +137,7 @@ function ListItem({ className, children, LinkClassName, to, ...props }: ListItem
   return (
     <li
       className={cn(
-        'hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer',
+        'hover:bg-main/10  w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer',
         className
       )}
       {...props}
