@@ -73,7 +73,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <a>{t('my_url')}</a>
+                                <button type='button'>{t('my_url')}</button>
                               </NavigationMenuLink>
                             }
                           />
@@ -88,7 +88,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <a>{t('history')}</a>
+                                <button type='button'>{t('history')}</button>
                               </NavigationMenuLink>
                             }
                           />

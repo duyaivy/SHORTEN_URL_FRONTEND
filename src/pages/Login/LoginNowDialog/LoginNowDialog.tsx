@@ -41,7 +41,6 @@ export default function LoginNowDialog({ trigger, handleEvent }: LoginNowDialogP
         </DialogHeader>
 
         <div className='mt-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
-          {/* --- Phần Đăng Nhập --- */}
           <div className='border rounded-2xl p-5'>
             <div className=''>
               <h3 className='text-main font-semibold text-center mb-3 flex flex-col justify-between'>
