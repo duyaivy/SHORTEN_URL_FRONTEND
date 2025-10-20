@@ -2,6 +2,7 @@ import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import UpdateUrlDialog from '@/components/UpdateUrlDialog'
 import { container, item } from '@/constants/motion.const'
 import { ExtraURL, URL } from '@/models/interface/url.interface'
@@ -56,36 +57,76 @@ export default function ManageUrls({
                 </div>
 
                 <div className='flex items-center shrink-0 justify-end'>
-                  <div className='p-2 text-yellow-500 hover:text-yellow-600 flex gap-1 cursor-pointer duration-300'>
-                    <Eye className='size-5 md:size-6' />
-                    <p>{url.views}</p>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <div className='p-2 text-yellow-500 hover:text-yellow-600 flex gap-1 cursor-pointer duration-300'>
+                          <Eye className='size-5 md:size-6' />
+                          <p>{url.views}</p>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('view')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
 
                   <UpdateUrlDialog url={url} isOnUpdate={isOnUpdate} onUpdate={handleUpdate} />
 
-                  <div className='p-2 text-green-500 hover:text-green-600 cursor-pointer duration-300'>
-                    <ReturnValue type='click' qr_code_link={url.qr_code} key={url._id} short_url={url.short_url} />
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <div className='p-2 text-green-500 hover:text-green-600 cursor-pointer duration-300'>
+                          <ReturnValue
+                            type='click'
+                            qr_code_link={url.qr_code}
+                            key={url._id}
+                            short_url={url.short_url}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('qr_code')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <div className='p-2 text-green-500 hover:text-green-600 flex items-center cursor-pointer duration-300'>
+                          <Switch
+                            disabled={isChangingStatus}
+                            checked={url.is_active}
+                            onCheckedChange={() => handleChangeStatus?.(url._id as string, !url.is_active)}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('status')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
 
-                  <div className='p-2 text-green-500 hover:text-green-600 flex items-center cursor-pointer duration-300'>
-                    <Switch
-                      disabled={isChangingStatus}
-                      checked={url.is_active}
-                      onCheckedChange={() => handleChangeStatus?.(url._id as string, !url.is_active)}
-                    />
-                  </div>
-
-                  <ConfirmDeleteDialog
-                    requiredText={url.alias as string}
-                    onConfirm={() => handleDelete?.(url._id as string)}
-                  >
-                    <button
-                      disabled={isDeleting}
-                      className='p-2 text-red-500 hover:text-red-600 cursor-pointer duration-300'
-                    >
-                      <Trash2 className='size-5 md:size-6' />
-                    </button>
-                  </ConfirmDeleteDialog>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <ConfirmDeleteDialog
+                          requiredText={url.alias as string}
+                          onConfirm={() => handleDelete?.(url._id as string)}
+                        >
+                          <button
+                            disabled={isDeleting}
+                            className='p-2 text-red-500 hover:text-red-600 cursor-pointer duration-300'
+                          >
+                            <Trash2 className='size-5 md:size-6' />
+                          </button>
+                        </ConfirmDeleteDialog>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('delete')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </motion.div>
             ))

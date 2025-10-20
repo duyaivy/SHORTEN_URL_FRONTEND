@@ -14,7 +14,7 @@ export default function I18NextLanguage() {
   }
 
   return (
-    <Select value={i18n.language} onValueChange={onChange}>
+    <Select aria-label='select_language' value={i18n.language} onValueChange={onChange}>
       <SelectTrigger aria-label='select_language' className='w-30'>
         {languages.find((lang) => lang.value === i18n.language)?.label}
       </SelectTrigger>

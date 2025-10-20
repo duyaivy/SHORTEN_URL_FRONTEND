@@ -43,9 +43,9 @@ export default function Header() {
         <div className=' md:max-w-10/12 mx-auto px-4 h-full flex justify-end items-center'>
           <div className='flex justify-between  w-full h-full'>
             <div className='col-span-8 md:col-span-3 '>
-              <div className='flex justify-center items-center h-full'>
-                <Link to={path.home} className='flex justify-between items-center '>
-                  <img className='w-auto h-18' src={logo} alt='logo' />
+              <div className='flex justify-center items-center h-full '>
+                <Link to={path.home} className='  flex justify-between items-center '>
+                  <img className='aspect-[2/1] h-18' src={logo} alt='logo' />
                 </Link>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <p>{t('my_url')}</p>
+                                <a>{t('my_url')}</a>
                               </NavigationMenuLink>
                             }
                           />
@@ -88,7 +88,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <p>{t('history')}</p>
+                                <a>{t('history')}</a>
                               </NavigationMenuLink>
                             }
                           />
@@ -146,6 +146,7 @@ export default function Header() {
                   setIsShow((prev) => !prev)
                 }}
                 className=' flex justify-end items-center p-4 '
+                aria-label='menu'
               >
                 <IconAnimateClick loop={false} play={true} animationData={menuV2} className='size-10 ' speed={2} />
               </button>

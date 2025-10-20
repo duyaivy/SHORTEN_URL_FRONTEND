@@ -20,7 +20,9 @@ export default function Layout({ children }: LayoutProps) {
       <Header />
       <div
         className='flex-1 bg-no-repeat bg-cover flex flex-col justify-center '
-        style={{ backgroundImage: `url('${bg_dot}')` }}
+        style={{
+          backgroundImage: window.innerWidth >= 768 ? `url(${bg_dot})` : 'none'
+        }}
       >
         {children}
       </div>

@@ -18,8 +18,8 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import config from '@/constants/config.const'
 import { Toast } from '@/utils/toastMessage'
 import { motion } from 'framer-motion'
-import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner'
 import LoginNowDialog from '../Login/LoginNowDialog'
+import LoadingSpinner from '@/components/LoadingSpinner'
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
