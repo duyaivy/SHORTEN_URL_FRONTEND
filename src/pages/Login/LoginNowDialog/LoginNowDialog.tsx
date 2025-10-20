@@ -33,9 +33,7 @@ export default function LoginNowDialog({ trigger, handleEvent }: LoginNowDialogP
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className='cursor-pointer'>{trigger ? trigger : null}</button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger ? trigger : null}</DialogTrigger>
       <DialogContent className='max-w-2xl'>
         <DialogHeader>
           <DialogTitle className='text-center text-lg font-semibold'>{t('login_now_title')}</DialogTitle>

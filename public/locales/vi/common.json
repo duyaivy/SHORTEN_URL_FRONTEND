@@ -90,5 +90,11 @@
   "login_now_title": "Khoan, chờ đã!",
   "login_now_description": "Đăng nhập ngay để sử dụng đầy đủ tính năng của chúng tôi.",
   "login_title": "Đăng nhập",
-  "guest_title": "Khách"
+  "guest_title": "Khách",
+  "view": "Lượt xem",
+  "qr_code": "Mã QR",
+  "status": "Trạng thái",
+  "update_url": " Cập nhật URL",
+  "copy": "Sao chép liên kết",
+  "access_url": "Truy cập URL"
 }
