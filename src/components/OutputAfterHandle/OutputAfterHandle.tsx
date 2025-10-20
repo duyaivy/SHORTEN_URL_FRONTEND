@@ -46,6 +46,7 @@ export default function OutputAfterHandle({ link }: OutputAfterHandleProps) {
             </div>
 
             <LinkHoverAnimate
+              isOpenBlank={true}
               className='w-full text-center text-lg mx-4 md:w-auto py-3'
               text={t('access')}
               to={link as To}
