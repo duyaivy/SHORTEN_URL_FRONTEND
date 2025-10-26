@@ -47,7 +47,7 @@ export default function UpdateUrlDialog({ onUpdate, isOnUpdate = false, url }: U
       <DialogTrigger asChild>
         <TooltipProvider>
           <Tooltip delayDuration={100}>
-            <TooltipTrigger>
+            <TooltipTrigger onClick={() => setOpen((prev) => !prev)}>
               <button
                 disabled={isOnUpdate}
                 className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600'
