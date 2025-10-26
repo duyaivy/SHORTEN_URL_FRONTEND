@@ -26,7 +26,6 @@ export default function Header() {
   const { isAuthenticated, profile } = useContext(AppContext)
   const { t } = useTranslation()
   const [isShow, setIsShow] = useState<boolean>(false)
-  console.log(profile)
 
   const logoutMutation = useLogoutMutation()
   const handleLogout = () => {
@@ -44,9 +43,9 @@ export default function Header() {
         <div className=' md:max-w-10/12 mx-auto px-4 h-full flex justify-end items-center'>
           <div className='flex justify-between  w-full h-full'>
             <div className='col-span-8 md:col-span-3 '>
-              <div className='flex justify-center items-center h-full'>
-                <Link to={path.home} className='flex justify-between items-center '>
-                  <img className='w-auto h-18' src={logo} alt='logo' />
+              <div className='flex justify-center items-center h-full '>
+                <Link to={path.home} className='  flex justify-between items-center '>
+                  <img className='aspect-[2/1] h-18' src={logo} alt='logo' />
                 </Link>
               </div>
             </div>
@@ -74,7 +73,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <p>{t('my_url')}</p>
+                                <button type='button'>{t('my_url')}</button>
                               </NavigationMenuLink>
                             }
                           />
@@ -89,7 +88,7 @@ export default function Header() {
                           <LoginNowDialog
                             trigger={
                               <NavigationMenuLink asChild>
-                                <p>{t('history')}</p>
+                                <button type='button'>{t('history')}</button>
                               </NavigationMenuLink>
                             }
                           />
@@ -115,15 +114,17 @@ export default function Header() {
                           </NavigationMenuTrigger>
                           <NavigationMenuContent>
                             <ul className='w-[150px] min-h-10 py-2 flex flex-col justify-center items-center gap-1 '>
-                              <p className='hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-white hover:!text-main text-sm cursor-pointer truncate'>
+                              <p className='hover:bg-main/10 w-full cursor-default rounded-[2px] py-1 text-center text-white hover:!text-main text-sm  truncate'>
                                 {profile.email}
                               </p>
-
-                              <ListItem to={path.login}>
-                                <button onClick={handleLogout} className='cursor-pointer font-semibold'>
-                                  {t('logout')}
-                                </button>
-                              </ListItem>
+                              <li
+                                onClick={handleLogout}
+                                className={
+                                  'hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer'
+                                }
+                              >
+                                <span className='cursor-pointer font-semibold'>{t('logout')}</span>
+                              </li>
                             </ul>
                           </NavigationMenuContent>
                         </NavigationMenuItem>
@@ -145,6 +146,7 @@ export default function Header() {
                   setIsShow((prev) => !prev)
                 }}
                 className=' flex justify-end items-center p-4 '
+                aria-label='menu'
               >
                 <IconAnimateClick loop={false} play={true} animationData={menuV2} className='size-10 ' speed={2} />
               </button>
@@ -189,14 +191,12 @@ export default function Header() {
             </ListItem>
 
             {isAuthenticated && profile ? (
-              <ListItem to={path.login}>
-                <button
-                  onClick={handleLogout}
-                  className='w-full text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'
-                >
-                  {profile.email + ' | ' + t('logout')}
-                </button>
-              </ListItem>
+              <li
+                onClick={handleLogout}
+                className='w-full text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'
+              >
+                {profile.email + ' | ' + t('logout')}
+              </li>
             ) : (
               <ListItem to={path.login}>
                 <p className='text-md text-tmain  py-2  text-center line-clamp-2 group-hover:text-main duration-300'>

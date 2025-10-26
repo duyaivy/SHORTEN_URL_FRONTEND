@@ -19,6 +19,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import InputPassword from '../InputPassword/InputPassword'
 import { URL } from '@/models/interface/url.interface'
 import { useState } from 'react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 interface UpdateUrlDialogProps {
   onUpdate?: (alias: string, url: URL) => void
@@ -44,9 +45,21 @@ export default function UpdateUrlDialog({ onUpdate, isOnUpdate = false, url }: U
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button disabled={isOnUpdate} className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600'>
-          <Edit className='size-5 md:size-6' />
-        </button>
+        <TooltipProvider>
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger onClick={() => setOpen((prev) => !prev)}>
+              <button
+                disabled={isOnUpdate}
+                className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600'
+              >
+                <Edit className='size-5 md:size-6' />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t('update_url')}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

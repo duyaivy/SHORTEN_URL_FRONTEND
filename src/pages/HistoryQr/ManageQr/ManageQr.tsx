@@ -9,6 +9,7 @@ import { Toast } from '@/utils/toastMessage'
 import { DATETIME_FORMAT } from '@/constants/common.const'
 import { motion } from 'framer-motion'
 import { container, item } from '@/constants/motion.const'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 interface ManageQrProps {
   myHistories: ExtraQrHistory[]
   onCheck: (_id: string) => void
@@ -54,34 +55,60 @@ export default function ManageQr({
                 </div>
 
                 <div className='flex items-center shrink-0 justify-end'>
-                  <a
-                    href={history.decoded}
-                    target='_blank'
-                    className='p-2 duration-300 cursor-pointer text-green-500 hover:text-green-600 flex items-center'
-                  >
-                    <ExternalLink className='size-5 md:size-6' />
-                  </a>
-                  <div
-                    className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600 flex items-center'
-                    onClick={() => handleCopy(history.decoded)}
-                  >
-                    <Copy className='size-5 md:size-6' />
-                  </div>
-                  <ConfirmDeleteDialog
-                    requiredText={t('delete')}
-                    onConfirm={() => {
-                      console.log(history._id)
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <a
+                          href={history.decoded}
+                          target='_blank'
+                          className='p-2 duration-300 cursor-pointer text-green-500 hover:text-green-600 flex items-center'
+                        >
+                          <ExternalLink className='size-5 md:size-6' />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('access_url')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <div
+                          className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600 flex items-center'
+                          onClick={() => handleCopy(history.decoded)}
+                        >
+                          <Copy className='size-5 md:size-6' />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('copy')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
 
-                      handleDelete?.(history._id as string)
-                    }}
-                  >
-                    <button
-                      className='p-2 duration-300 cursor-pointer text-red-500 hover:text-red-600 flex items-center'
-                      disabled={isDeleting}
-                    >
-                      <Trash2 className='size-5 md:size-6' />
-                    </button>
-                  </ConfirmDeleteDialog>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <ConfirmDeleteDialog
+                          requiredText={t('delete')}
+                          onConfirm={() => {
+                            handleDelete?.(history._id as string)
+                          }}
+                        >
+                          <button
+                            className='p-2 duration-300 cursor-pointer text-red-500 hover:text-red-600 flex items-center'
+                            disabled={isDeleting}
+                          >
+                            <Trash2 className='size-5 md:size-6' />
+                          </button>
+                        </ConfirmDeleteDialog>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t('delete')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </motion.div>
             )

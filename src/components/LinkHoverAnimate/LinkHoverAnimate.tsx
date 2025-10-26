@@ -5,12 +5,15 @@ interface LinkHoverAnimateProps {
   text: string
   to: To
   className?: string
+  isOpenBlank?: boolean
 }
 
-export default function LinkHoverAnimate({ text, to, className }: LinkHoverAnimateProps) {
+export default function LinkHoverAnimate({ text, to, className, isOpenBlank }: LinkHoverAnimateProps) {
   return (
     <Link
       to={to}
+      target={isOpenBlank ? '_blank' : '_self'}
+      rel={isOpenBlank ? 'noopener noreferrer' : undefined}
       className={cn(
         'relative inline-block overflow-hidden rounded-sm md:px-4 mo:!px-8 py-2 border-2 border-main text-sub2',
         'md:text-main duration-300 hover:text-black group',

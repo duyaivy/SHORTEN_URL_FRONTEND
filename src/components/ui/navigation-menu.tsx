@@ -2,7 +2,7 @@ import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu'
 import { cva } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
 import { Link, To } from 'react-router-dom'
-import { ComponentProps, ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react'
+import { ComponentProps, forwardRef, ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react'
 import { cn } from '@/utils/lib'
 
 interface ListItemProps extends ComponentProps<ForwardRefExoticComponent<RefAttributes<HTMLLIElement>>> {
@@ -133,21 +133,25 @@ function NavigationMenuIndicator({ className, ...props }: ComponentProps<typeof 
     </NavigationMenuPrimitive.Indicator>
   )
 }
-function ListItem({ className, children, LinkClassName, to, ...props }: ListItemProps) {
-  return (
-    <li
-      className={cn(
-        'hover:bg-main/10 w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer',
-        className
-      )}
-      {...props}
-    >
-      <Link className={LinkClassName} to={to}>
-        {children}
-      </Link>
-    </li>
-  )
-}
+const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
+  ({ className, children, LinkClassName, to, ...props }, ref) => {
+    return (
+      <li
+        ref={ref}
+        className={cn(
+          'hover:bg-main/10  w-full rounded-[2px] py-1 text-center text-tmain hover:!text-main text-sm cursor-pointer',
+          className
+        )}
+        {...props}
+      >
+        <Link className={LinkClassName} to={to}>
+          {children}
+        </Link>
+      </li>
+    )
+  }
+)
+
 export {
   ListItem,
   NavigationMenu,

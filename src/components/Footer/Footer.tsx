@@ -18,22 +18,26 @@ export default function Footer() {
         <div className='flex justify-between flex-1 w-full gap-2 '>
           <ul className='flex-1 flex gap-2.5 justify-start md:justify-center'>
             <li className='group'>
-              <a href='mailto:quocduy0322@gmail.com' className=''>
+              <a aria-label='Email' target='_blank' href='mailto:quocduy0322@gmail.com'>
                 <Mail className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://github.com/duyaivy' className=''>
+              <a aria-label='GitHub Profile' target='_blank' href='https://github.com/duyaivy'>
                 <Github className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://www.facebook.com/quoc.duy.51065' className=''>
+              <a aria-label='Facebook Profile' target='_blank' href='https://www.facebook.com/quoc.duy.51065'>
                 <Facebook className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
             <li className='group'>
-              <a href='https://www.linkedin.com/in/qu%E1%BB%91c-duy-78444b346' className=''>
+              <a
+                aria-label='LinkedIn Profile'
+                target='_blank'
+                href='https://www.linkedin.com/in/qu%E1%BB%91c-duy-78444b346'
+              >
                 <Linkedin className='size-10 group-hover:text-main duration-300 group-hover:-translate-y-1 p-1' />
               </a>
             </li>
