@@ -133,4 +133,4 @@ The **ShortLink Frontend** connects to a powerful **Node.js + ExpressJS Backend*
 
 ---
 
-> Made with ❤️ using React, TypeScript & Vite.
+> Made by duyaivy with 💖.
