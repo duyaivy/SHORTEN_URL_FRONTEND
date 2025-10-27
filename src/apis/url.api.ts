@@ -63,6 +63,7 @@ export const useQueryMyUrls = (params: GetPaginationConfig) => {
 interface useDeleteUrlsProps {
   onSuccess?: (data: AxiosResponse<SuccessResponse<null>>) => void
   onError?: (error: AxiosError) => void
+  onSettled?: () => void
 }
 export const useDeleteUrlsMutation = ({ onSuccess, onError }: useDeleteUrlsProps) => {
   return useMutation({
@@ -99,12 +100,13 @@ export const useQueryQrHistory = (params: GetPaginationConfig) => {
     placeholderData: keepPreviousData
   })
 }
-export const useDeleteQrHistoryMutation = ({ onSuccess, onError }: useDeleteUrlsProps) => {
+export const useDeleteQrHistoryMutation = ({ onSuccess, onError, onSettled }: useDeleteUrlsProps) => {
   return useMutation({
     mutationKey: mutationKeys.deleteQrHistory,
     mutationFn: urlApi.deleteQrHistory,
     onSuccess,
-    onError
+    onError,
+    onSettled
   })
 }
 // recapcha

@@ -2,7 +2,7 @@ import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useTranslation } from 'react-i18next'
-import { ExtraQrHistory } from '@/models/interface/url.interface'
+
 import { Copy, ExternalLink, Trash2 } from 'lucide-react'
 import dayjs from 'dayjs'
 import { Toast } from '@/utils/toastMessage'
@@ -10,22 +10,15 @@ import { DATETIME_FORMAT } from '@/constants/common.const'
 import { motion } from 'framer-motion'
 import { container, item } from '@/constants/motion.const'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useManageHistoryScan } from '@/stores/qr-history.store'
 interface ManageQrProps {
-  myHistories: ExtraQrHistory[]
-  onCheck: (_id: string) => void
   handleDelete?: (_id: string) => void
-  isDeleting?: boolean
   isLoading?: boolean
 }
 
-export default function ManageQr({
-  myHistories,
-  onCheck,
-  handleDelete,
-  isDeleting = false,
-  isLoading = false
-}: ManageQrProps) {
+export default function ManageQr({ handleDelete, isLoading = false }: ManageQrProps) {
   const { t } = useTranslation()
+  const { extraHistory, handleCheck, isDeleting } = useManageHistoryScan()
   const handleCopy = (text?: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
@@ -33,9 +26,9 @@ export default function ManageQr({
   }
   return (
     <div className='flex-col w-full mt-4'>
-      {myHistories.length > 0 ? (
+      {extraHistory.length > 0 ? (
         <motion.div variants={container} initial='hidden' animate='show'>
-          {myHistories.map((history) => {
+          {extraHistory.map((history) => {
             const date = dayjs(history.date).format(DATETIME_FORMAT)
             return (
               <motion.div
@@ -44,7 +37,7 @@ export default function ManageQr({
                 className='border-b py-2 flex flex-col md:flex-row md:justify-between md:items-center hover:bg-black/60 transition'
               >
                 <div className='flex items-center gap-3 grow'>
-                  <Checkbox checked={history.isCheck} onClick={() => onCheck(history._id as string)} />
+                  <Checkbox checked={history.isCheck} onClick={() => handleCheck(history._id as string)} />
                   <div className='flex flex-col'>
                     <a href={history.decoded} target='_blank' className='hover:underline'>
                       <span className='font-medium'>{date}</span>

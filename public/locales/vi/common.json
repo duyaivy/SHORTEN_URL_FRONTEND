@@ -71,7 +71,7 @@
   "cancel": "Hủy",
   "delete": "Xoá",
   "confirm_delete_placeholder": "Nhập...",
-  "confirm_delete_description": "Để xác nhận xóa, vui lòng nhập \"{{requiredText}}\" vào ô bên dưới.",
+  "confirm_delete_description": "Để xác nhận xóa, vui lòng nhập \"xoá {{requiredText}}\" vào ô bên dưới.",
   "confirm_delete_title": "Xác nhận xóa",
   "require_text_all": "{{count}} URLs",
   "update_url_title": "Cập nhật URL",

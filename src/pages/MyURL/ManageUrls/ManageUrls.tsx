@@ -5,49 +5,36 @@ import { Switch } from '@/components/ui/switch'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import UpdateUrlDialog from '@/components/UpdateUrlDialog'
 import { container, item } from '@/constants/motion.const'
-import { ExtraURL, URL } from '@/models/interface/url.interface'
+import { URL } from '@/models/interface/url.interface'
 import ReturnValue from '@/pages/ShortenURL/ReturnValue'
+import { useManageUrlStore } from '@/stores/manageUrl.store'
 import { motion } from 'framer-motion'
 import { Eye, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 interface ManageUrlsProps {
-  myUrls: ExtraURL[]
-  onCheck: (_id: string) => void
   handleChangeStatus?: (_id: string, is_active: boolean) => void
   handleDelete?: (_id: string) => void
-  isDeleting?: boolean
-  isChangingStatus?: boolean
-  isOnUpdate?: boolean
   handleUpdate?: (alias: string, url: URL) => void
   isLoading?: boolean
 }
 
-export default function ManageUrls({
-  myUrls,
-  onCheck,
-  handleChangeStatus,
-  handleDelete,
-  handleUpdate,
-  isDeleting = false,
-  isChangingStatus = false,
-  isOnUpdate = false,
-  isLoading = false
-}: ManageUrlsProps) {
+export default function ManageUrls({ handleChangeStatus, handleDelete, handleUpdate, isLoading }: ManageUrlsProps) {
   const { t } = useTranslation()
+  const { isDeleting, isUpdating, isChangingStatus, handleCheck, extraUrl } = useManageUrlStore()
   return (
     <div className='flex-col w-full mt-4 '>
-      {myUrls.length > 0 ? (
+      {extraUrl.length > 0 ? (
         <motion.div variants={container} initial='hidden' animate='show' className='flex flex-col w-full mt-4'>
-          {myUrls.length > 0 ? (
-            myUrls.map((url) => (
+          {extraUrl.length > 0 ? (
+            extraUrl.map((url) => (
               <motion.div
                 key={url._id}
                 variants={item}
                 className='border-b py-2 flex flex-col md:flex-row md:justify-between md:items-center hover:bg-black/60 transition'
               >
                 <div className='flex items-center gap-3 grow'>
-                  <Checkbox checked={url.isCheck} onClick={() => onCheck(url._id as string)} />
+                  <Checkbox checked={url.isCheck} onClick={() => handleCheck(url._id as string)} />
                   <div className='flex flex-col'>
                     <a href={url.short_url} className='font-medium hover:underline'>
                       {url.alias}
@@ -71,7 +58,7 @@ export default function ManageUrls({
                     </Tooltip>
                   </TooltipProvider>
 
-                  <UpdateUrlDialog url={url} isOnUpdate={isOnUpdate} onUpdate={handleUpdate} />
+                  <UpdateUrlDialog url={url} isOnUpdate={isUpdating} onUpdate={handleUpdate} />
 
                   <TooltipProvider>
                     <Tooltip delayDuration={100}>
