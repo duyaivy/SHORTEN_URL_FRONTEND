@@ -1,17 +1,18 @@
 import { useChangeActiveMutation, useDeleteUrlsMutation, useQueryMyUrls, useUpdateUrlMutation } from '@/apis/url.api'
 import { useUrlsQueryConfig } from '@/hooks/useUrlParams'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import ManageUrls from './ManageUrls'
 import PaginationPage from '@/components/PaginationPage'
 import { path } from '@/constants/path'
-import { ExtraURL, GetPaginationConfig, URL } from '@/models/interface/url.interface'
+import { GetPaginationConfig, URL } from '@/models/interface/url.interface'
 import { Toast } from '@/utils/toastMessage'
 import ControlUrls from './ControlUrls/ControlUrls'
 import { useQueryClient } from '@tanstack/react-query'
 import { SuccessResponse } from '@/models/interface/response.interface'
 import { AxiosResponse } from 'axios'
 import { queryKeys } from '@/helpers/key-tanstack'
+import { useManageUrlStore } from '@/stores/manageUrl.store'
 
 export default function MyURL() {
   const { t } = useTranslation(['common', 'message'])
@@ -21,80 +22,80 @@ export default function MyURL() {
   const { data: myUrls, isLoading } = useQueryMyUrls(queryString as GetPaginationConfig)
   const control = myUrls?.data.data.control
 
-  const [extraUrls, setExtraUrls] = useState<ExtraURL[]>(() => {
-    return myUrls?.data.data.data.map((item) => ({ ...item, isCheck: false })) || []
-  })
+  // Zustand store
+  const { setExtraUrl, setIsDeleting, setIsUpdating, setIsChangingStatus, getCheckedIds, updateUrlStatus, updateUrl } =
+    useManageUrlStore()
+
+  // Mutations
   const useUpdateMutation = useUpdateUrlMutation({
     onSuccess: (data: AxiosResponse<SuccessResponse<URL>>) => {
       Toast.success({ description: t('message:update_url_success') })
       const updatedItem = data.data.data
-      setExtraUrls((prev) =>
-        prev.map((item) => (item._id === updatedItem._id ? { ...item, ...updatedItem, isCheck: false } : item))
-      )
+      updateUrl(updatedItem._id as string, updatedItem)
+      setIsUpdating(false)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      // Handle error
       Toast.error({
         description:
           error.response?.data.data[0].message || error.response?.data.message || t('message:something_went_wrong')
       })
+      setIsUpdating(false)
     }
   })
+
   const useDeleteMutation = useDeleteUrlsMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.myUrls, queryString] })
+      setIsDeleting(false)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      // Handle error
       Toast.error({ description: error.response?.data.message || t('message:something_went_wrong') })
+      setIsDeleting(false)
     }
   })
+
   const useChangeStatusMutation = useChangeActiveMutation({
+    onSuccess: () => {
+      setIsChangingStatus(false)
+    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      // Handle error
       Toast.error({ description: error.response?.data.message || t('message:something_went_wrong') })
+      setIsChangingStatus(false)
     }
   })
+
+  // Sync data from API to store
   useEffect(() => {
     if (myUrls?.data.data.data) {
-      setExtraUrls(myUrls.data.data.data.map((item) => ({ ...item, isCheck: false })))
+      setExtraUrl(myUrls.data.data.data.map((item) => ({ ...item, isCheck: false })))
     }
-  }, [myUrls])
+  }, [myUrls, setExtraUrl])
 
+  // Handlers that call mutations
   const handleDeleteUrl = (_id: string) => {
+    setIsDeleting(true)
     useDeleteMutation.mutate([_id])
   }
 
   const handleDeleteUrlsChecked = () => {
-    const data = extraUrls.filter((url) => url.isCheck)
-    const ids = data.map((url) => url._id as string)
+    const ids = getCheckedIds()
     if (ids.length > 0) {
+      setIsDeleting(true)
       useDeleteMutation.mutate(ids)
     }
   }
-  const handleCheck = (_id?: string) => {
-    setExtraUrls((prev) => {
-      return prev.map((item) => (item._id === _id ? { ...item, isCheck: !item.isCheck } : item))
-    })
-  }
-  // change status active
+
   const handleChangeStatus = async (_id: string, is_active: boolean) => {
-    await useChangeStatusMutation.mutateAsync([
-      {
-        _id,
-        is_active
-      }
-    ])
-    setExtraUrls((prev) => prev.map((item) => (item._id === _id ? { ...item, is_active: !item.is_active } : item)))
+    setIsChangingStatus(true)
+    await useChangeStatusMutation.mutateAsync([{ _id, is_active }])
+    updateUrlStatus(_id, is_active)
   }
-  const handleCheckAll = () => {
-    const isAllChecked = extraUrls.every((url) => url.isCheck)
-    setExtraUrls((prev) => prev.map((item) => ({ ...item, isCheck: !isAllChecked })))
-  }
+
   const handleUpdateUrl = (alias: string, url: URL) => {
+    setIsUpdating(true)
     useUpdateMutation.mutate({
       alias,
       url: {
@@ -105,6 +106,7 @@ export default function MyURL() {
       }
     })
   }
+
   return (
     <div className='max-w-6xl mx-auto min-h-[70vh] '>
       <div
@@ -113,21 +115,12 @@ export default function MyURL() {
       '
       >
         {/* control */}
-        <ControlUrls
-          isLoading={isLoading}
-          extraUrls={extraUrls}
-          onCheckAll={handleCheckAll}
-          onDeleteUrls={handleDeleteUrlsChecked}
-        />
+        <ControlUrls isLoading={isLoading} onDeleteUrls={handleDeleteUrlsChecked} />
         <ManageUrls
           isLoading={isLoading}
           handleChangeStatus={handleChangeStatus}
-          myUrls={extraUrls}
-          isChangingStatus={useChangeStatusMutation.isPending}
           handleDelete={handleDeleteUrl}
-          onCheck={handleCheck}
           handleUpdate={handleUpdateUrl}
-          isDeleting={useDeleteMutation.isPending}
         />
       </div>
       {control && (

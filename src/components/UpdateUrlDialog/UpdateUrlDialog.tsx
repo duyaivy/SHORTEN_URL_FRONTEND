@@ -13,7 +13,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Edit, ExternalLink, Link2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { ShortenURLSchema, ShortenURLSchemaType } from '@/zod/url.zod'
+import { ShortenURLSchema, ShortenURLSchemaType } from '@/zods/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import InputPassword from '../InputPassword/InputPassword'

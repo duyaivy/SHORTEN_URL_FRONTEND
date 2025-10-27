@@ -71,7 +71,7 @@
   "cancel": "Cancel",
   "delete": "Delete",
   "confirm_delete_placeholder": "Enter...",
-  "confirm_delete_description": "To confirm deletion, please enter \"{{requiredText}}\" below.",
+  "confirm_delete_description": "To confirm deletion, please enter  \"delete {{requiredText}}\" below.",
   "confirm_delete_title": "Confirm Deletion",
   "require_text_all": "{{count}} URLs",
   "update_url_title": "Update URL",
