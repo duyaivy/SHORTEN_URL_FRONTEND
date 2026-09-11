@@ -22,10 +22,10 @@ export const authApi = {
   resetPassword: (params: { token: string; password: string }) => {
     return axiosClient.post<SuccessResponse<null>>(API_RESET_PASS_URL, params)
   },
-  refreshToken: (token: string) => {
-    return axiosClient.post<SuccessResponse<AuthResponse>>(API_REFRESH_TOKEN_URL, { token })
+  refreshToken: () => {
+    return axiosClient.post<SuccessResponse<AuthResponse>>(API_REFRESH_TOKEN_URL)
   },
-  logout: (refresh_token: string) => {
+  logout: (refresh_token?: string) => {
     return axiosClient.delete<SuccessResponse<null>>(API_LOGOUT_URL, { data: { refresh_token } })
   },
   forgotPassword: (params: { email?: string }) => {

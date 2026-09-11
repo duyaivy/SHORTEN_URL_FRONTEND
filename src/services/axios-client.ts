@@ -1,48 +1,33 @@
 import config from '@/constants/config.const'
-
-import { SuccessResponse } from '@/models/interface/response.interface'
-import {
-  clearLS,
-  getAccessTokenFromLS,
-  getRefreshTokenFromLS,
-  setAccessTokenToLS,
-  setRefreshTokenToLS
-} from '@/utils/storage'
+import { clearLS } from '@/utils/storage'
 import axios, {
   AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  HttpStatusCode,
-  InternalAxiosRequestConfig
+  HttpStatusCode
 } from 'axios'
-import isEqual from 'lodash/isEqual'
-
-interface TokenResponse {
-  access_token: string
-  refresh_token: string
-  email: string
-}
 
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean
 }
 
 let isRefreshing: boolean = false
-type RefreshSubscriber = (token: string) => void
+type RefreshSubscriber = () => void
 let refreshSubscribers: RefreshSubscriber[] = []
 
 const addSubscriber = (callback: RefreshSubscriber): void => {
   refreshSubscribers.push(callback)
 }
 
-const onRefreshed = (token: string): void => {
-  refreshSubscribers.forEach((callback) => callback(token))
+const onRefreshed = (): void => {
+  refreshSubscribers.forEach((callback) => callback())
   refreshSubscribers = []
 }
 
 const axiosClient: AxiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -50,11 +35,7 @@ const axiosClient: AxiosInstance = axios.create({
 
 // Request interceptor
 axiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = getAccessTokenFromLS()
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+  (config) => {
     return config
   },
   (error: AxiosError): Promise<AxiosError> => {
@@ -70,51 +51,31 @@ axiosClient.interceptors.response.use(
   async (error: AxiosError): Promise<AxiosError> => {
     const originalRequest = error.config as ExtendedAxiosRequestConfig
 
-    if (error.response && isEqual(error.response.status, HttpStatusCode.Unauthorized) && !originalRequest._retry) {
+    if (error.response && error.response.status === HttpStatusCode.Unauthorized && !originalRequest._retry) {
       if (!isRefreshing) {
         originalRequest._retry = true
         isRefreshing = true
 
         try {
-          const refreshToken = getRefreshTokenFromLS()
+          // Call refresh token endpoint with credentials (cookies)
+          await axios.post(
+            `${config.baseUrl}/auth/refresh-token`,
+            {},
+            { withCredentials: true }
+          )
 
-          if (!refreshToken) {
-            logout()
-            return Promise.reject(error)
-          }
-
-          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/auth/refresh-token`, {
-            refresh_token: refreshToken
-          })
-
-          if (isEqual(response.status, HttpStatusCode.Ok)) {
-            const { access_token, refresh_token } = response.data.data
-
-            setAccessTokenToLS(access_token)
-            setRefreshTokenToLS(refresh_token)
-            axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
-
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${access_token}`
-            }
-
-            onRefreshed(access_token)
-            isRefreshing = false
-            return axiosClient(originalRequest)
-          }
+          onRefreshed()
+          isRefreshing = false
+          return axiosClient(originalRequest)
         } catch (refreshError) {
           isRefreshing = false
-
           logout()
           return Promise.reject(refreshError)
         }
       } else {
-        return new Promise((resolve) => {
-          addSubscriber((token: string) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`
-            }
-            resolve(axiosClient(originalRequest))
+        return new Promise((resolve, reject) => {
+          addSubscriber(() => {
+            axiosClient(originalRequest).then(resolve).catch(reject)
           })
         })
       }

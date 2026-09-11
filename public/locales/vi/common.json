@@ -96,5 +96,13 @@
   "status": "Trạng thái",
   "update_url": " Cập nhật URL",
   "copy": "Sao chép liên kết",
-  "access_url": "Truy cập URL"
+  "access_url": "Truy cập URL",
+  "season_spring": "🌸 Mùa xuân",
+  "season_summer": "☀️ Mùa hè",
+  "season_autumn": "🍂 Mùa thu",
+  "season_winter": "❄️ Mùa đông",
+  "season_night": "🌙 Ban đêm",
+  "qr_hint_default": "Nhấn vào cây để xem mã QR · Kéo để xoay",
+  "qr_hint_success": "Kéo để xoay · Cuộn để zoom · Nhấn để xem QR",
+  "copied": "Đã sao chép!"
 }

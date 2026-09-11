@@ -66,7 +66,6 @@ export default function ManageUrls({ handleChangeStatus, handleDelete, handleUpd
                         <div className='p-2 text-green-500 hover:text-green-600 cursor-pointer duration-300'>
                           <ReturnValue
                             type='click'
-                            qr_code_link={url.qr_code}
                             key={url._id}
                             short_url={url.short_url}
                           />

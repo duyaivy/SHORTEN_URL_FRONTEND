@@ -96,5 +96,13 @@
   "status": "Status",
   "update_url": "Update URL",
   "copy": "Copy Link",
-  "access_url": "Access URL"
+  "access_url": "Access URL",
+  "season_spring": "🌸 Spring",
+  "season_summer": "☀️ Summer",
+  "season_autumn": "🍂 Autumn",
+  "season_winter": "❄️ Winter",
+  "season_night": "🌙 Night",
+  "qr_hint_default": "Click the tree to see QR code · Drag to rotate",
+  "qr_hint_success": "Drag to rotate · Scroll to zoom · Click to toggle QR",
+  "copied": "Copied!"
 }
