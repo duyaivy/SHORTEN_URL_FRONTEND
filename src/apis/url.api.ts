@@ -54,8 +54,7 @@ export const useQueryMyUrls = (params: GetPaginationConfig) => {
   return useQuery({
     queryKey: [queryKeys.myUrls, params],
     queryFn: () => urlApi.getMyUrls(params),
-    staleTime: STATE_TIME,
-    placeholderData: keepPreviousData
+    staleTime: STATE_TIME
   })
 }
 

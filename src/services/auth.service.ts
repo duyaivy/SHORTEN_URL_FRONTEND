@@ -3,6 +3,7 @@ import { AuthResponse } from '@/models/interface/auth.interface'
 import { SuccessResponse } from '@/models/interface/response.interface'
 import { LoginType, RegisterType } from '@/models/types/auth.type'
 import { Omit } from 'lodash'
+
 const API_LOGIN_URL = '/auth/login'
 const API_LOGOUT_URL = '/auth/logout'
 const API_REGISTER_URL = '/auth/register'
