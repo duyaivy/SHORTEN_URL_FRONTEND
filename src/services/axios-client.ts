@@ -1,12 +1,6 @@
 import config from '@/constants/config.const'
 import { clearLS } from '@/utils/storage'
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  HttpStatusCode
-} from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, HttpStatusCode } from 'axios'
 
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean
@@ -58,11 +52,7 @@ axiosClient.interceptors.response.use(
 
         try {
           // Call refresh token endpoint with credentials (cookies)
-          await axios.post(
-            `${config.baseUrl}/auth/refresh-token`,
-            {},
-            { withCredentials: true }
-          )
+          await axios.post(`${config.baseUrl}/auth/refresh-token`, {}, { withCredentials: true })
 
           onRefreshed()
           isRefreshing = false

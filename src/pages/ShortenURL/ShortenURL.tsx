@@ -1,4 +1,5 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useRef, useState, useCallback } from 'react'
+import QRCode from 'qrcode'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -28,7 +29,6 @@ export default function ShortenURL() {
 
   const [copied, setCopied] = useState(false)
   const [presetIdx, setPresetIdx] = useState(0)
-  const [accentIdx, setAccentIdx] = useState(0)
   const [isCustomAlias, setIsCustomAlias] = useState<boolean>(false)
 
   const form = useForm<ShortenURLSchemaType>({
@@ -96,11 +96,17 @@ export default function ShortenURL() {
     }
   }
 
-  const handleDownload = () => {
-    if (!qrContainerRef.current) return
-    const canvas = qrContainerRef.current.querySelector('canvas')
-    if (!canvas) { Toast.error({ description: t('download_qr_error') }); return }
+  const handleDownload = useCallback(async () => {
+    if (!shortUrl && !qrUrl) return
+    const downloadUrl = shortUrl || qrUrl
     try {
+      const canvas = document.createElement('canvas')
+      await QRCode.toCanvas(canvas, downloadUrl, {
+        width: 512,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' },
+        errorCorrectionLevel: 'H'
+      })
       canvas.toBlob((blob) => {
         if (!blob) { Toast.error({ description: t('download_qr_error') }); return }
         const url = URL.createObjectURL(blob)
@@ -113,7 +119,7 @@ export default function ShortenURL() {
     } catch {
       Toast.error({ description: t('download_qr_error') })
     }
-  }
+  }, [shortUrl, qrUrl, t])
 
   return (
     <motion.div
@@ -139,8 +145,6 @@ export default function ShortenURL() {
               qrUrl={qrUrl}
               presetIdx={presetIdx}
               setPresetIdx={setPresetIdx}
-              accentIdx={accentIdx}
-              setAccentIdx={setAccentIdx}
               isPending={isPending}
               isSuccess={isSuccess}
               qrContainerRef={qrContainerRef}

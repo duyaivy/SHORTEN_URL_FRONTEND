@@ -2,14 +2,12 @@ import { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EveryQRCode, type EveryQRCodeSceneConfig } from '@every-qrcode/react'
-import { PRESETS, ACCENT_COLORS } from '../constants/presets'
+import { PRESETS } from '../constants/presets'
 
 interface QRViewerPanelProps {
   qrUrl: string
   presetIdx: number
   setPresetIdx: (idx: number) => void
-  accentIdx: number
-  setAccentIdx: (idx: number) => void
   isPending: boolean
   isSuccess: boolean
   qrContainerRef: RefObject<HTMLDivElement | null>
@@ -19,8 +17,6 @@ export default function QRViewerPanel({
   qrUrl,
   presetIdx,
   setPresetIdx,
-  accentIdx,
-  setAccentIdx,
   isPending,
   isSuccess,
   qrContainerRef
@@ -30,14 +26,7 @@ export default function QRViewerPanel({
   const activePreset = PRESETS[presetIdx]
 
   const scene: EveryQRCodeSceneConfig = {
-    ...activePreset.scene,
-    palette: [
-      activePreset.scene.palette![0],
-      activePreset.scene.palette![1],
-      accentIdx === 0 ? activePreset.scene.palette![2] : ACCENT_COLORS[accentIdx].rgb,
-      activePreset.scene.palette![3],
-      activePreset.scene.palette![4]
-    ] as EveryQRCodeSceneConfig['palette']
+    ...activePreset.scene
   }
 
   return (
@@ -46,7 +35,7 @@ export default function QRViewerPanel({
       <div className='relative w-full overflow-hidden' style={{ maxWidth: 440 }}>
         <div ref={qrContainerRef} className='w-full aspect-square'>
           <EveryQRCode
-            key={`${qrUrl}-${presetIdx}-${accentIdx}`}
+            key={`${qrUrl}-${presetIdx}`}
             url={qrUrl}
             style={{ width: '100%', height: '100%' }}
             interactive={true}
@@ -101,25 +90,6 @@ export default function QRViewerPanel({
           >
             {t(p.i18nKey)}
           </button>
-        ))}
-      </div>
-
-      {/* Accent Color Swatches */}
-      <div className='flex items-center gap-2'>
-        {ACCENT_COLORS.map((c, i) => (
-          <button
-            key={i}
-            type='button'
-            onClick={() => setAccentIdx(i)}
-            title={c.label}
-            className={[
-              'size-7 rounded-full transition-all duration-200 cursor-pointer border-2',
-              accentIdx === i ? 'scale-125 border-white shadow-md' : 'scale-100 border-transparent hover:scale-110'
-            ].join(' ')}
-            style={{
-              backgroundColor: `rgb(${Math.round(c.rgb[0] * 255)},${Math.round(c.rgb[1] * 255)},${Math.round(c.rgb[2] * 255)})`
-            }}
-          />
         ))}
       </div>
     </div>
