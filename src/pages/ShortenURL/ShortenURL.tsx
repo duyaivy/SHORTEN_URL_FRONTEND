@@ -59,7 +59,7 @@ export default function ShortenURL() {
   const qrUrl = isSuccess && shortUrl
     ? shortUrl
     : isCustomAlias && aliasValue
-      ? `${window.location.origin}/${aliasValue}`
+      ? `${config.baseUrl || window.location.origin}/view/${aliasValue}`
       : DEFAULT_URL
 
   const handleSubmit = async () => {

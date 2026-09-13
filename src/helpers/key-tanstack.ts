@@ -16,6 +16,5 @@ export const mutationKeys = {
 }
 export const queryKeys = {
   myUrls: 'myUrls',
-  qrHistory: 'qrHistory',
-  alias: 'alias'
+  qrHistory: 'qrHistory'
 }

@@ -42,7 +42,7 @@ axiosClient.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => {
     return response
   },
-  async (error: AxiosError): Promise<AxiosError> => {
+  async (error: AxiosError): Promise<any> => {
     const originalRequest = error.config as ExtendedAxiosRequestConfig
 
     if (error.response && error.response.status === HttpStatusCode.Unauthorized && !originalRequest._retry) {
