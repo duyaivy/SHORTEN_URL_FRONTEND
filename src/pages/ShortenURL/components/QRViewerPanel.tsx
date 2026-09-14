@@ -1,7 +1,7 @@
 import { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { EveryQRCode, type EveryQRCodeSceneConfig } from '@every-qrcode/react'
+import { EveryQRCode } from '@every-qrcode/react'
 import { PRESETS } from '../constants/presets'
 
 interface QRViewerPanelProps {
@@ -25,23 +25,19 @@ export default function QRViewerPanel({
 
   const activePreset = PRESETS[presetIdx]
 
-  const scene: EveryQRCodeSceneConfig = {
-    ...activePreset.scene
-  }
-
   return (
     <div className='flex flex-col items-center gap-3.5 w-full'>
       {/* QR 3D / 2D Viewer container */}
       <div className='relative w-full overflow-hidden' style={{ maxWidth: 440 }}>
         <div ref={qrContainerRef} className='w-full aspect-square'>
           <EveryQRCode
-            key={`${qrUrl}-${presetIdx}`}
+            key={qrUrl}
             url={qrUrl}
             style={{ width: '100%', height: '100%' }}
             interactive={true}
             model='tree'
             initialView='model'
-            scene={scene}
+            scene={activePreset.scene}
           />
         </div>
 

@@ -63,6 +63,16 @@ export default function useRoutesElements() {
       element: <Outlet />, 
       children: [
         {
+          path: path.home,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <HomePage />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
           path: path.shorten_link,
           element: (
             <LazyComponent>
@@ -160,17 +170,6 @@ export default function useRoutesElements() {
       path: '',
       element: <Outlet />,
       children: [
-        {
-          path: path.home,
-          element: (
-            <LazyComponent>
-              <Layout>
-                <HomePage />
-              </Layout>
-            </LazyComponent>
-          )
-        },
-
         {
           path: path.get_alias_with_pw,
           element: (

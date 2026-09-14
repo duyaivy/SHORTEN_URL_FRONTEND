@@ -24,7 +24,7 @@ export default defineConfig({
       gzipSize: true, // hiển thị thêm kích thước sau nén gzip
       brotliSize: true // hiển thị thêm kích thước sau nén brotli
     })
-  ],
+  ], base: '/a/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
