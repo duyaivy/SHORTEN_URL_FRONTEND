@@ -10,7 +10,7 @@ interface ManageHistoryScan {
   setExtraHistory: (histories: ExtraQrHistory[]) => void
   setIsDeleting: (isDeleting: boolean) => void
 
-  handleCheck: (_id: string) => void
+  handleCheck: (id: string) => void
   handleCheckAll: () => void
 
   // Get computed values
@@ -32,9 +32,9 @@ export const useManageHistoryScan = create<ManageHistoryScan>((set, get) => ({
   setIsDeleting: (isDeleting) => set({ isDeleting }),
 
   // Toggle check single item
-  handleCheck: (_id) => {
+  handleCheck: (id) => {
     set((state) => ({
-      extraHistory: state.extraHistory.map((item) => (item._id === _id ? { ...item, isCheck: !item.isCheck } : item))
+      extraHistory: state.extraHistory.map((item) => (item.id === id ? { ...item, isCheck: !item.isCheck } : item))
     }))
   },
 
@@ -52,7 +52,7 @@ export const useManageHistoryScan = create<ManageHistoryScan>((set, get) => ({
   getCheckedIds: () => {
     return get()
       .extraHistory.filter((item) => item.isCheck)
-      .map((item) => item._id as string)
+      .map((item) => item.id as string)
   },
 
   getCheckedCount: () => {

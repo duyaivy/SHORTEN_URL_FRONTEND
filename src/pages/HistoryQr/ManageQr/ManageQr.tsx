@@ -12,7 +12,7 @@ import { container, item } from '@/constants/motion.const'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useManageHistoryScan } from '@/stores/qr-history.store'
 interface ManageQrProps {
-  handleDelete?: (_id: string) => void
+  handleDelete?: (id: string) => void
   isLoading?: boolean
 }
 
@@ -33,11 +33,11 @@ export default function ManageQr({ handleDelete, isLoading = false }: ManageQrPr
             return (
               <motion.div
                 variants={item}
-                key={history._id}
+                key={history.id}
                 className='border-b py-2 flex flex-col md:flex-row md:justify-between md:items-center hover:bg-black/60 transition'
               >
                 <div className='flex items-center gap-3 grow'>
-                  <Checkbox checked={history.isCheck} onClick={() => handleCheck(history._id as string)} />
+                  <Checkbox checked={history.isCheck} onClick={() => handleCheck(history.id as string)} />
                   <div className='flex flex-col'>
                     <a href={history.decoded} target='_blank' className='hover:underline'>
                       <span className='font-medium'>{date}</span>
@@ -86,7 +86,7 @@ export default function ManageQr({ handleDelete, isLoading = false }: ManageQrPr
                         <ConfirmDeleteDialog
                           requiredText={t('delete')}
                           onConfirm={() => {
-                            handleDelete?.(history._id as string)
+                            handleDelete?.(history.id as string)
                           }}
                         >
                           <button

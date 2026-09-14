@@ -17,6 +17,7 @@ const Login = lazy(() => import('@/pages/Login'))
 const Register = lazy(() => import('@/pages/Register'))
 const PageNotFound = lazy(() => import('@/pages/404/PageNotFound'))
 const HomePage = lazy(() => import('@/pages/Home'))
+const LinkUnavailable = lazy(() => import('@/pages/LinkUnavailable'))
 
 const DirectViewRedirect = () => {
   const { alias } = useParams<{ alias: string }>()
@@ -77,6 +78,26 @@ export default function useRoutesElements() {
             <LazyComponent>
               <Layout>
                 <ScanQR />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
+          path: path.link_unavailable,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <LinkUnavailable />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
+          path: '/a/link-unavailable',
+          element: (
+            <LazyComponent>
+              <Layout>
+                <LinkUnavailable />
               </Layout>
             </LazyComponent>
           )

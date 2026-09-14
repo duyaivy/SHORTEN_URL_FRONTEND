@@ -104,5 +104,12 @@
   "season_night": "🌙 Night",
   "qr_hint_default": "Click the tree to see QR code · Drag to rotate",
   "qr_hint_success": "Drag to rotate · Scroll to zoom · Click to toggle QR",
-  "copied": "Copied!"
+  "copied": "Copied!",
+  "link_unavailable_title": "Link Unavailable",
+  "link_unavailable_badge": "Cannot Access",
+  "link_unavailable_desc": "The link you are trying to access cannot be reached or no longer exists on the system.",
+  "link_unavailable_alias_label": "Requested alias:",
+  "link_unavailable_btn_shorten": "Shorten New URL",
+  "link_unavailable_btn_scan": "Scan QR Code",
+  "link_unavailable_tip": "Tip: Log in to create permanent links that never expire and manage them easily."
 }

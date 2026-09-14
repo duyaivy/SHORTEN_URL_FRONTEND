@@ -59,7 +59,7 @@ export default function ShortenURL() {
   const qrUrl = isSuccess && shortUrl
     ? shortUrl
     : isCustomAlias && aliasValue
-      ? `${config.baseUrl || window.location.origin}/view/${aliasValue}`
+      ? `${config.baseUrl}/${aliasValue}`
       : DEFAULT_URL
 
   const handleSubmit = async () => {
@@ -70,7 +70,7 @@ export default function ShortenURL() {
         await useRecaptcha.mutateAsync(recapchaValue)
         const formValues = form.getValues()
         const data = {
-          ...formValues,
+          url: formValues.url?.trim(),
           alias: isCustomAlias && formValues.alias?.trim() ? formValues.alias.trim() : undefined,
           password: formValues.password || undefined
         }

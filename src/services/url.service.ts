@@ -23,7 +23,11 @@ export const urlApi = {
     return axiosClient.patch<SuccessResponse<URL>>(`${API_URL}${alias}`, url)
   },
   changeActive: (urls: UrlMiniUpdate[]) => {
-    return axiosClient.patch<SuccessResponse<null>>(API_CHANGE_ACTIVE_URL, { urls })
+    const sanitizedUrls = urls.map((item) => ({
+      id: (item.id || (item as any)._id) as string,
+      is_active: Boolean(item.is_active)
+    }))
+    return axiosClient.patch<SuccessResponse<null>>(API_CHANGE_ACTIVE_URL, { urls: sanitizedUrls })
   },
   delete: (ids: string[]) => {
     return axiosClient.delete<SuccessResponse<null>>(API_MY_URLS, { data: { ids } })

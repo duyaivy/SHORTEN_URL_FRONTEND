@@ -51,7 +51,7 @@ export default function HistoryQr() {
   const handleDeleteHistories = () => {
     setIsDeleting(true)
     const data = extraHistory.filter((qr) => qr.isCheck)
-    const ids = data.map((qr) => qr._id as string)
+    const ids = data.map((qr) => qr.id as string)
     if (ids.length > 0) {
       useDeleteMutation.mutate(ids)
     }

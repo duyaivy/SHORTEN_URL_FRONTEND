@@ -15,7 +15,7 @@ interface ManageUrlStore {
   setIsUpdating: (isUpdating: boolean) => void
   setIsChangingStatus: (isChangingStatus: boolean) => void
 
-  handleCheck: (_id: string) => void
+  handleCheck: (id: string) => void
   handleCheckAll: () => void
 
   // Get computed values
@@ -25,8 +25,8 @@ interface ManageUrlStore {
   getTotalViews: () => number
 
   // Optimistic updates (call after mutation success)
-  updateUrlStatus: (_id: string, is_active: boolean) => void
-  updateUrl: (_id: string, updatedData: Partial<URL>) => void
+  updateUrlStatus: (id: string, is_active: boolean) => void
+  updateUrl: (id: string, updatedData: Partial<URL>) => void
 }
 
 const initialState = {
@@ -47,9 +47,11 @@ export const useManageUrlStore = create<ManageUrlStore>((set, get) => ({
   setIsChangingStatus: (isChangingStatus) => set({ isChangingStatus }),
 
   // Toggle check single item
-  handleCheck: (_id) => {
+  handleCheck: (id) => {
     set((state) => ({
-      extraUrl: state.extraUrl.map((item) => (item._id === _id ? { ...item, isCheck: !item.isCheck } : item))
+      extraUrl: state.extraUrl.map((item) =>
+        item.id === id || item._id === id ? { ...item, isCheck: !item.isCheck } : item
+      )
     }))
   },
 
@@ -67,7 +69,7 @@ export const useManageUrlStore = create<ManageUrlStore>((set, get) => ({
   getCheckedIds: () => {
     return get()
       .extraUrl.filter((url) => url.isCheck)
-      .map((url) => url._id as string)
+      .map((url) => (url.id || url._id) as string)
   },
 
   getCheckedCount: () => {
@@ -83,15 +85,19 @@ export const useManageUrlStore = create<ManageUrlStore>((set, get) => ({
     return get().extraUrl.reduce((count, url) => count + Number(url.views || 0), 0)
   },
 
-  updateUrlStatus: (_id, is_active) => {
+  updateUrlStatus: (id, is_active) => {
     set((state) => ({
-      extraUrl: state.extraUrl.map((url) => (url._id === _id ? { ...url, is_active } : url))
+      extraUrl: state.extraUrl.map((url) =>
+        url.id === id || url._id === id ? { ...url, is_active } : url
+      )
     }))
   },
 
-  updateUrl: (_id, updatedData) => {
+  updateUrl: (id, updatedData) => {
     set((state) => ({
-      extraUrl: state.extraUrl.map((item) => (item._id === _id ? { ...item, ...updatedData } : item))
+      extraUrl: state.extraUrl.map((item) =>
+        item.id === id || item._id === id ? { ...item, ...updatedData } : item
+      )
     }))
   }
 }))

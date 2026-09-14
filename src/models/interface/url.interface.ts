@@ -1,4 +1,5 @@
 export interface URL {
+  id?: string
   _id?: string
   owner_id: string
   views?: number
@@ -15,8 +16,8 @@ export interface ExtraURL extends URL {
   isCheck: boolean
 }
 export interface UrlMiniUpdate {
+  id: string
   is_active: boolean
-  _id: string
 }
 export interface GetPaginationConfig {
   page?: number
@@ -26,7 +27,7 @@ export interface GetPaginationConfig {
 
 export interface QrHistory {
   decoded?: string
-  _id?: string
+  id?: string
   created_at?: string
   date?: string
 }

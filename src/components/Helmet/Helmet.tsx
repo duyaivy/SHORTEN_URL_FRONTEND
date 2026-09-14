@@ -22,10 +22,23 @@ export default function Helmet({ title, description }: HelmetProps) {
     defaultValue: 'ShortLink - Dịch vụ rút gọn link thông minh, an toàn.'
   })
 
+  const isUnavailableOrError =
+    currentPath === path.link_unavailable ||
+    currentPath === ('/a/link-unavailable' as any) ||
+    currentPath === path.notFound
+
   return (
     <ReactHelmet>
       <title>{title || titleAuto}</title>
       <meta name='description' content={description || descriptionAuto} />
+      {isUnavailableOrError && (
+        <>
+          <meta name='robots' content='noindex, nofollow, noarchive, nosnippet' />
+          <meta name='googlebot' content='noindex, nofollow, noarchive, nosnippet' />
+          <meta name='bingbot' content='noindex, nofollow, noarchive, nosnippet' />
+          <meta name='prerender-status-code' content='410' />
+        </>
+      )}
     </ReactHelmet>
   )
 }

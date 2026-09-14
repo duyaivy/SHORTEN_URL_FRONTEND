@@ -1,5 +1,4 @@
 import { trash } from '@/assets/icons'
-import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -30,12 +29,9 @@ export default function ControlUrls({ onDeleteUrls, isLoading }: ControlUrlsProp
             </div>
             <Checkbox checked={isAllChecked()} onClick={handleCheckAll} className='size-6 m-1' />
             {getCheckedCount() > 0 && (
-              <ConfirmDeleteDialog
-                requiredText={t('require_text_all', { count: getCheckedCount() })}
-                onConfirm={onDeleteUrls}
-              >
-                <Lottie className='size-10 mb-2 cursor-pointer ' animationData={trash} />
-              </ConfirmDeleteDialog>
+              <button type='button' onClick={onDeleteUrls} className='cursor-pointer'>
+                <Lottie className='size-10 mb-2' animationData={trash} />
+              </button>
             )}
           </div>
           <div className='md:w-auto mt-2 w-full md:mt-0'>

@@ -8,5 +8,6 @@ export const path = {
   notFound: '/a/404',
   my_url: '/a/my-url',
   history: '/a/qr-history',
-  get_alias_with_pw: '/a/password/:alias'
+  get_alias_with_pw: '/a/password/:alias',
+  link_unavailable: '/a/link-unavailable'
 }
