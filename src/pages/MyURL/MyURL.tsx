@@ -23,7 +23,7 @@ export default function MyURL() {
   const control = myUrls?.data.data.control
 
   // Zustand store
-  const { setExtraUrl, setIsDeleting, setIsUpdating, setIsChangingStatus, getCheckedIds, updateUrlStatus, updateUrl } =
+  const { setExtraUrl, setIsDeleting, setIsUpdating, getCheckedIds, updateUrlStatus, updateUrl } =
     useManageUrlStore()
 
   // Mutations
@@ -31,7 +31,7 @@ export default function MyURL() {
     onSuccess: (data: AxiosResponse<SuccessResponse<URL>>) => {
       Toast.success({ description: t('message:update_url_success') })
       const updatedItem = data.data.data
-      updateUrl(updatedItem._id as string, updatedItem)
+      updateUrl(updatedItem.id as string, updatedItem)
       setIsUpdating(false)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,28 +56,29 @@ export default function MyURL() {
     }
   })
 
-  const useChangeStatusMutation = useChangeActiveMutation({
-    onSuccess: () => {
-      setIsChangingStatus(false)
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      Toast.error({ description: error.response?.data.message || t('message:something_went_wrong') })
-      setIsChangingStatus(false)
-    }
-  })
+  const useChangeStatusMutation = useChangeActiveMutation({})
 
-  // Sync data from API to store
+  // Sync data from API to store (normalize both id and _id so neither is undefined)
   useEffect(() => {
     if (myUrls?.data.data.data) {
-      setExtraUrl(myUrls.data.data.data.map((item) => ({ ...item, isCheck: false })))
+      setExtraUrl(
+        myUrls.data.data.data.map((item: any) => {
+          const resolvedId = item.id || item._id
+          return {
+            ...item,
+            id: resolvedId,
+            _id: resolvedId,
+            isCheck: false
+          }
+        })
+      )
     }
   }, [myUrls, setExtraUrl])
 
   // Handlers that call mutations
-  const handleDeleteUrl = (_id: string) => {
+  const handleDeleteUrl = (id: string) => {
     setIsDeleting(true)
-    useDeleteMutation.mutate([_id])
+    useDeleteMutation.mutate([id])
   }
 
   const handleDeleteUrlsChecked = () => {
@@ -88,10 +89,31 @@ export default function MyURL() {
     }
   }
 
-  const handleChangeStatus = async (_id: string, is_active: boolean) => {
-    setIsChangingStatus(true)
-    await useChangeStatusMutation.mutateAsync([{ _id, is_active }])
-    updateUrlStatus(_id, is_active)
+  const handleChangeStatus = (id: string, is_active: boolean) => {
+    if (!id) {
+      console.error('handleChangeStatus: id is undefined')
+      return
+    }
+
+    // 1. Optimistic Update: instantly update the UI (Facebook style)
+    const previousStatus = !is_active
+    updateUrlStatus(id, is_active)
+
+    // 2. Background API call: non-blocking, does not disable UI or block other actions
+    useChangeStatusMutation.mutate([{ id, is_active }], {
+      onError: (error: any) => {
+        // Rollback on error
+        console.error('changeActive error response:', error.response?.data)
+        updateUrlStatus(id, previousStatus)
+        const errorMsg =
+          error.response?.data?.data?.[0]?.message ||
+          (Array.isArray(error.response?.data?.message)
+            ? error.response.data.message.join(', ')
+            : error.response?.data?.message) ||
+          t('message:something_went_wrong')
+        Toast.error({ description: errorMsg })
+      }
+    })
   }
 
   const handleUpdateUrl = (alias: string, url: URL) => {

@@ -26,7 +26,13 @@ export default function AliasFetchWithPW() {
     onSuccess: (data) => {
       window.location.href = data.data.data.url || path.home
     },
-    onError: (error) => handleErrorAPI(error, form)
+    onError: (error: any) => {
+      const message = error.response?.data?.message
+      if (message) {
+        form.setError('password', { message, type: 'server' })
+      }
+      handleErrorAPI(error, form)
+    }
   })
   const handleSubmit = () => {
     if (alias) {

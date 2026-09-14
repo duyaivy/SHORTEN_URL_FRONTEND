@@ -1,171 +1,185 @@
+import { useContext, useRef, useState, useCallback } from 'react'
+import QRCode from 'qrcode'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
+import ReCAPTCHA from 'react-google-recaptcha'
+
 import { useRecapchaMutation, useShortenUrlMutation } from '@/apis/url.api'
-import InputPassword from '@/components/InputPassword/InputPassword'
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { AppContext } from '@/contexts/app.context'
 import { useHandleError } from '@/utils/handleErrorAPI'
 import { ShortenURLSchema, ShortenURLSchemaType } from '@/zods/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ExternalLink, Link2 } from 'lucide-react'
-import { useContext, useRef } from 'react'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import ReturnValue from './ReturnValue'
-import { useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/helpers/key-tanstack'
-import ReCAPTCHA from 'react-google-recaptcha'
 import config from '@/constants/config.const'
+import { queryKeys } from '@/helpers/key-tanstack'
 import { Toast } from '@/utils/toastMessage'
-import { motion } from 'framer-motion'
-import LoginNowDialog from '../Login/LoginNowDialog'
-import LoadingSpinner from '@/components/LoadingSpinner'
+
+import { DEFAULT_URL } from './constants/presets'
+import QRViewerPanel from './components/QRViewerPanel'
+import ShortenFormPanel from './components/ShortenFormPanel'
+import ShortenResultCard from './components/ShortenResultCard'
+
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
   const queryClient = useQueryClient()
   const recaptchaRef = useRef<ReCAPTCHA>(null)
+  const qrContainerRef = useRef<HTMLDivElement>(null)
+
+  const [copied, setCopied] = useState(false)
+  const [presetIdx, setPresetIdx] = useState(0)
+  const [isCustomAlias, setIsCustomAlias] = useState<boolean>(false)
+
+  const form = useForm<ShortenURLSchemaType>({
+    resolver: zodResolver(ShortenURLSchema()),
+    defaultValues: { url: '', alias: '', password: '' }
+  })
+
+  const aliasValue = form.watch('alias')
+  const { handleErrorAPI } = useHandleError()
+
   const useRecaptcha = useRecapchaMutation({
     onError: (error: any) => {
       Toast.error({ description: error.response?.data.message })
     }
   })
-  const form = useForm<ShortenURLSchemaType>({
-    resolver: zodResolver(ShortenURLSchema()),
-    defaultValues: {
-      url: '',
-      alias: '',
-      password: ''
-    }
-  })
-  const { handleErrorAPI } = useHandleError()
+
   const shortenLinkMutation = useShortenUrlMutation({
     onError: (error) => handleErrorAPI(error, form),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.myUrls] })
     }
   })
+
+  const shortUrl = shortenLinkMutation.data?.data.data.short_url
+  const isSuccess = shortenLinkMutation.isSuccess
+  const isPending = shortenLinkMutation.isPending
+
+  const qrUrl = isSuccess && shortUrl
+    ? shortUrl
+    : isCustomAlias && aliasValue
+      ? `${config.baseUrl}/${aliasValue}`
+      : DEFAULT_URL
+
   const handleSubmit = async () => {
     const recapchaValue = await recaptchaRef.current?.executeAsync()
     recaptchaRef.current?.reset()
     if (recapchaValue) {
       try {
         await useRecaptcha.mutateAsync(recapchaValue)
-        const data = { ...form.getValues(), password: form.getValues('password') || undefined }
+        const formValues = form.getValues()
+        const data = {
+          url: formValues.url?.trim(),
+          alias: isCustomAlias && formValues.alias?.trim() ? formValues.alias.trim() : undefined,
+          password: formValues.password || undefined
+        }
         shortenLinkMutation.mutate(data)
       } catch (error: any) {
         Toast.error({ description: error.response?.data.message })
       }
     }
   }
+
   const handleReset = () => {
+    setIsCustomAlias(false)
     form.reset()
+    shortenLinkMutation.reset()
+    setCopied(false)
   }
+
+  const handleCopy = () => {
+    if (shortUrl) {
+      navigator.clipboard.writeText(shortUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const handleDownload = useCallback(async () => {
+    if (!shortUrl && !qrUrl) return
+    const downloadUrl = shortUrl || qrUrl
+    try {
+      const canvas = document.createElement('canvas')
+      await QRCode.toCanvas(canvas, downloadUrl, {
+        width: 512,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' },
+        errorCorrectionLevel: 'H'
+      })
+      canvas.toBlob((blob) => {
+        if (!blob) { Toast.error({ description: t('download_qr_error') }); return }
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'QR_Code.png'
+        a.click()
+        URL.revokeObjectURL(url)
+      }, 'image/png')
+    } catch {
+      Toast.error({ description: t('download_qr_error') })
+    }
+  }, [shortUrl, qrUrl, t])
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className='max-w-3xl mx-auto '
+      transition={{ duration: 0.4 }}
+      className='w-full max-w-5xl mx-auto px-4 py-4'
     >
-      <div className='flex justify-center flex-col items-center min-w-sm sm:min-w-xl md:min-w-2xl'>
-        <h1 className='text-xl md:text-3xl font-semibold  mb-2'>{t('shorten_link')}</h1>
-        <p className='text-center text-white mb-6 text-muted-foreground'>{t('shorten_link_description')}</p>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            onReset={handleReset}
-            className='w-10/12 space-y-2 px-4'
-            noValidate
-          >
-            <FormField
-              control={form.control}
-              name='url'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('url')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete='off'
-                      placeholder={t('url_placeholder')}
-                      type='url'
-                      {...field}
-                      icon={<Link2 />}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      {/* Page Header */}
+      <div className='text-center mb-8'>
+        <h1 className='text-2xl md:text-3xl font-bold mb-1 bg-gradient-to-r from-main to-secondary bg-clip-text text-transparent'>
+          {t('shorten_link')}
+        </h1>
+        <p className='text-muted-foreground text-xs md:text-sm'>{t('shorten_link_description')}</p>
+      </div>
 
-            <FormField
-              control={form.control}
-              name={'alias'}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('alias')}</FormLabel>
-                  <FormControl>
-                    <Input autoComplete='off' placeholder={t('alias_placeholder')} {...field} icon={<ExternalLink />} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      {/* Main Two-Column Layout */}
+      <div className='flex flex-col lg:flex-row lg:items-center gap-8'>
+        {/* Left Column: QR 3D Viewer */}
+        <div className='w-full lg:w-1/2 flex justify-center'>
+          <div className='w-full max-w-md lg:max-w-none'>
+            <QRViewerPanel
+              qrUrl={qrUrl}
+              presetIdx={presetIdx}
+              setPresetIdx={setPresetIdx}
+              isPending={isPending}
+              isSuccess={isSuccess}
+              qrContainerRef={qrContainerRef}
             />
-            {isAuthenticated && (
-              <FormField
-                control={form.control}
-                name={'password'}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('password')}</FormLabel>
-                    <FormControl>
-                      <InputPassword autoComplete='off' placeholder={t('password_url_placeholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          </div>
+        </div>
+
+        {/* Vertical Divider */}
+        <div className='hidden lg:block w-px bg-white/10 self-stretch' />
+
+        {/* Right Column: Form Panel & Result */}
+        <div className='w-full lg:w-1/2'>
+          <ShortenFormPanel
+            form={form}
+            isAuthenticated={isAuthenticated}
+            isPending={isPending}
+            isCustomAlias={isCustomAlias}
+            setIsCustomAlias={setIsCustomAlias}
+            onSubmit={handleSubmit}
+            onReset={handleReset}
+          />
+
+          <AnimatePresence>
+            {isSuccess && shortUrl && (
+              <ShortenResultCard
+                shortUrl={shortUrl}
+                copied={copied}
+                onCopy={handleCopy}
+                onDownloadQR={handleDownload}
               />
             )}
-            <div className='flex w-full gap-2 items-center my-10'>
-              <Button
-                type='reset'
-                className='min-w-20 h-12 text-lg cursor-pointer  bg-transparent py-3 border-2 border-white text-white duration-300 hover:shadow-lg'
-              >
-                {t('clear')}
-              </Button>
-              {!isAuthenticated ? (
-                <LoginNowDialog
-                  handleEvent={() => handleSubmit()}
-                  trigger={
-                    <Button
-                      type='button'
-                      loading={shortenLinkMutation.isPending}
-                      className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
-                    >
-                      {t('shorten_link')}
-                    </Button>
-                  }
-                />
-              ) : (
-                <Button
-                  loading={shortenLinkMutation.isPending}
-                  type='submit'
-                  className='w-full flex-1 text-lg cursor-pointer h-12 bg-transparent py-3 border-2 border-main text-main duration-300 hover:shadow-lg '
-                >
-                  {t('shorten_link')}
-                </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-      </div>{' '}
-      {shortenLinkMutation.isSuccess && (
-        <ReturnValue
-          qr_code_link={shortenLinkMutation.data?.data.data.qr_code}
-          short_url={shortenLinkMutation.data?.data.data.short_url}
-        />
-      )}
-      {shortenLinkMutation.isPending && <LoadingSpinner />}
+          </AnimatePresence>
+        </div>
+      </div>
+
       <ReCAPTCHA hidden ref={recaptchaRef} size='invisible' sitekey={config.siteKeyCapcha} />
     </motion.div>
   )

@@ -41,21 +41,11 @@ export const useGetShortenUrlMutation = ({ onSuccess, onError }: useShortenUrlPr
   })
 }
 
-interface useQueryAliasProps {
-  alias: string
-}
-export const useQueryAlias = ({ alias }: useQueryAliasProps) => {
-  return useQuery({
-    queryKey: [queryKeys.alias, alias],
-    queryFn: () => urlApi.getAlias(alias)
-  })
-}
 export const useQueryMyUrls = (params: GetPaginationConfig) => {
   return useQuery({
     queryKey: [queryKeys.myUrls, params],
     queryFn: () => urlApi.getMyUrls(params),
-    staleTime: STATE_TIME,
-    placeholderData: keepPreviousData
+    staleTime: STATE_TIME
   })
 }
 

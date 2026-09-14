@@ -74,8 +74,12 @@ export default function ScanQR() {
         ?.start(
           { facingMode: 'environment' },
           {
-            fps: 10,
-            qrbox: { width: 250, height: 250 }
+            fps: 15,
+            qrbox: (viewfinderWidth, viewfinderHeight) => {
+              const size = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.82)
+              return { width: Math.max(220, size), height: Math.max(220, size) }
+            },
+            disableFlip: true
           },
           (decodedText) => {
             setValue({ link: decodedText, date: new Date() })

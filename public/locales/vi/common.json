@@ -96,5 +96,20 @@
   "status": "Trạng thái",
   "update_url": " Cập nhật URL",
   "copy": "Sao chép liên kết",
-  "access_url": "Truy cập URL"
+  "access_url": "Truy cập URL",
+  "season_spring": "🌸 Mùa xuân",
+  "season_summer": "☀️ Mùa hè",
+  "season_autumn": "🍂 Mùa thu",
+  "season_winter": "❄️ Mùa đông",
+  "season_night": "🌙 Ban đêm",
+  "qr_hint_default": "Nhấn vào cây để xem mã QR · Kéo để xoay",
+  "qr_hint_success": "Kéo để xoay · Cuộn để zoom · Nhấn để xem QR",
+  "copied": "Đã sao chép!",
+  "link_unavailable_title": "Liên kết không khả dụng",
+  "link_unavailable_badge": "Không thể truy cập",
+  "link_unavailable_desc": "Đường dẫn bạn đang cố gắng truy cập hiện không thể mở hoặc đã không còn tồn tại trên hệ thống.",
+  "link_unavailable_alias_label": "Đường dẫn yêu cầu:",
+  "link_unavailable_btn_shorten": "Tạo liên kết mới",
+  "link_unavailable_btn_scan": "Quét mã QR",
+  "link_unavailable_tip": "Mẹo: Đăng nhập tài khoản để tạo liên kết có thời hạn vĩnh viễn và quản lý dễ dàng."
 }

@@ -3,7 +3,7 @@ import { SuccessResponse } from '@/models/interface/response.interface'
 import { User, UserListConfig, UserRequest, UserResponse, UserUpdateRequest } from '@/models/interface/user.interface'
 
 const API_USER_URL = '/user'
-const API_GET_ME_URL = '/user/get-me'
+const API_GET_ME_URL = '/auth/me'
 
 export const userApi = {
   get: (params: UserListConfig) => {
