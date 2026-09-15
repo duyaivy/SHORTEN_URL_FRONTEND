@@ -17,7 +17,7 @@ services:
       CORS_ORIGIN: 'http://localhost'
       CORS_ORIGIN_PUBLIC: 'http://192.168.1.13'
       CLIENT_SHORT_LINK: 'http://localhost/a'
-      SERVER_ALIAS_URL: 'http://localhost/view'
+      SERVER_ALIAS_URL: 'http://localhost'
       COMMON_RATE_LIMIT_WINDOW_MS: ${COMMON_RATE_LIMIT_WINDOW_MS:-1000}
       COMMON_RATE_LIMIT_MAX_REQUESTS: ${COMMON_RATE_LIMIT_MAX_REQUESTS:-100}
       DATABASE_URL: ${DATABASE_URL}
@@ -64,7 +64,7 @@ services:
       CORS_ORIGIN: 'http://localhost'
       CORS_ORIGIN_PUBLIC: 'http://192.168.1.13'
       CLIENT_SHORT_LINK: 'http://localhost/a'
-      SERVER_ALIAS_URL: 'http://localhost/view'
+      SERVER_ALIAS_URL: 'http://localhost'
       COMMON_RATE_LIMIT_WINDOW_MS: ${COMMON_RATE_LIMIT_WINDOW_MS:-1000}
       COMMON_RATE_LIMIT_MAX_REQUESTS: ${COMMON_RATE_LIMIT_MAX_REQUESTS:-100}
       DATABASE_URL: ${DATABASE_URL}
