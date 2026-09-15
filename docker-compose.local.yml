@@ -1,0 +1,133 @@
+version: '3.9'
+
+services:
+  backend_node1:
+    build:
+      context: ../SHORTEN_URL
+      dockerfile: Dockerfile
+    image: shortlink-backend:local
+    container_name: shortlink_be_node1
+    restart: unless-stopped
+    expose:
+      - '8080'
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      HOST: '0.0.0.0'
+      CORS_ORIGIN: 'http://localhost'
+      CORS_ORIGIN_PUBLIC: 'http://192.168.1.13'
+      CLIENT_SHORT_LINK: 'http://localhost/a'
+      SERVER_ALIAS_URL: 'http://localhost/view'
+      COMMON_RATE_LIMIT_WINDOW_MS: ${COMMON_RATE_LIMIT_WINDOW_MS:-1000}
+      COMMON_RATE_LIMIT_MAX_REQUESTS: ${COMMON_RATE_LIMIT_MAX_REQUESTS:-100}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      PRIVATE_ACCESS_TOKEN_KEY: ${PRIVATE_ACCESS_TOKEN_KEY}
+      PRIVATE_REFRESH_TOKEN_KEY: ${PRIVATE_REFRESH_TOKEN_KEY}
+      ALGORITHM_JWT: ${ALGORITHM_JWT:-HS256}
+      ACCESS_TOKEN_EXPIRATION_TIME: ${ACCESS_TOKEN_EXPIRATION_TIME:-1h}
+      REFRESH_TOKEN_EXPIRATION_TIME: ${REFRESH_TOKEN_EXPIRATION_TIME:-3d}
+      SECRET_OR_PUBLIC_JWT_KEY: ${SECRET_OR_PUBLIC_JWT_KEY}
+      PRIVATE_PASSWORD: ${PRIVATE_PASSWORD}
+      PASSWORD_SECRET: ${PASSWORD_SECRET}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      CLIENT_URL: 'http://localhost'
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: 'http://localhost/a'
+      SECRECT_KEY_RECAPCHA: ${SECRECT_KEY_RECAPCHA}
+    networks:
+      - shortlink_local_network
+    healthcheck:
+      test: ['CMD', 'node', '-e', 'require("http").get("http://localhost:8080/health", (res) => process.exit(res.statusCode === 200 ? 0 : 1))']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend_node2:
+    build:
+      context: ../SHORTEN_URL
+      dockerfile: Dockerfile
+    image: shortlink-backend:local
+    container_name: shortlink_be_node2
+    restart: unless-stopped
+    expose:
+      - '8080'
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      HOST: '0.0.0.0'
+      CORS_ORIGIN: 'http://localhost'
+      CORS_ORIGIN_PUBLIC: 'http://192.168.1.13'
+      CLIENT_SHORT_LINK: 'http://localhost/a'
+      SERVER_ALIAS_URL: 'http://localhost/view'
+      COMMON_RATE_LIMIT_WINDOW_MS: ${COMMON_RATE_LIMIT_WINDOW_MS:-1000}
+      COMMON_RATE_LIMIT_MAX_REQUESTS: ${COMMON_RATE_LIMIT_MAX_REQUESTS:-100}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      PRIVATE_ACCESS_TOKEN_KEY: ${PRIVATE_ACCESS_TOKEN_KEY}
+      PRIVATE_REFRESH_TOKEN_KEY: ${PRIVATE_REFRESH_TOKEN_KEY}
+      ALGORITHM_JWT: ${ALGORITHM_JWT:-HS256}
+      ACCESS_TOKEN_EXPIRATION_TIME: ${ACCESS_TOKEN_EXPIRATION_TIME:-1h}
+      REFRESH_TOKEN_EXPIRATION_TIME: ${REFRESH_TOKEN_EXPIRATION_TIME:-3d}
+      SECRET_OR_PUBLIC_JWT_KEY: ${SECRET_OR_PUBLIC_JWT_KEY}
+      PRIVATE_PASSWORD: ${PRIVATE_PASSWORD}
+      PASSWORD_SECRET: ${PASSWORD_SECRET}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      CLIENT_URL: 'http://localhost'
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: 'http://localhost/a'
+      SECRECT_KEY_RECAPCHA: ${SECRECT_KEY_RECAPCHA}
+    networks:
+      - shortlink_local_network
+    healthcheck:
+      test: ['CMD', 'node', '-e', 'require("http").get("http://localhost:8080/health", (res) => process.exit(res.statusCode === 200 ? 0 : 1))']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: DockerFile
+      args:
+        VITE_API_URL: 'http://localhost/api'
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+        VITE_SERVER_ALIAS_URL: 'http://localhost'
+        VITE_REDIRECT_URI: 'http://localhost/a'
+        VITE_CLIENT_SECRET: ${VITE_CLIENT_SECRET}
+        VITE_GOOGLE_URL: 'https://accounts.google.com/o/oauth2/v2/auth'
+        VITE_SITE_KEY_CAPCHA: ${VITE_SITE_KEY_CAPCHA}
+    image: shortlink-frontend:local
+    container_name: shortlink_frontend
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.local.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      backend_node1:
+        condition: service_healthy
+      backend_node2:
+        condition: service_healthy
+    networks:
+      - shortlink_local_network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+networks:
+  shortlink_local_network:
+    driver: bridge

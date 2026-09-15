@@ -1,0 +1,149 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force rebuild even if no changes'
+        type: boolean
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/shortlink-frontend
+
+jobs:
+  build-and-push:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+      image_digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+            VITE_SERVER_ALIAS_URL=${{ secrets.VITE_SERVER_ALIAS_URL }}
+            VITE_REDIRECT_URI=${{ secrets.VITE_REDIRECT_URI }}
+            VITE_CLIENT_SECRET=${{ secrets.VITE_CLIENT_SECRET }}
+            VITE_GOOGLE_URL=${{ secrets.VITE_GOOGLE_URL }}
+            VITE_SITE_KEY_CAPCHA=${{ secrets.VITE_SITE_KEY_CAPCHA }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-frontend:
+    name: Deploy Frontend to VPS 1
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: production
+
+    steps:
+      - name: SSH into VPS 1 and update Frontend container
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS1_HOST }}
+          username: ${{ secrets.VPS1_USER }}
+          key: ${{ secrets.VPS1_SSH_KEY }}
+          port: ${{ secrets.VPS1_SSH_PORT || 22 }}
+          script: |
+            set -euo pipefail
+
+            echo "Deploying Frontend — $(date '+%Y-%m-%d %H:%M:%S')"
+
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+              -u "${{ github.actor }}" --password-stdin
+
+            IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image_tag }}"
+            echo "Pulling $IMAGE"
+            docker pull "$IMAGE"
+
+            cd ${{ secrets.VPS1_DEPLOY_DIR }}
+
+            # Update FE_IMAGE_TAG in .env (preserves other vars set by backend workflow)
+            if [ -f .env ]; then
+              sed -i 's|^FE_IMAGE_TAG=.*|FE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}|' .env
+              grep -q '^FE_IMAGE_TAG=' .env || echo 'FE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}' >> .env
+              sed -i 's|^GITHUB_REPOSITORY_OWNER=.*|GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}|' .env
+            else
+              printf 'GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}\nFE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}\n' > .env
+            fi
+
+            echo "Restarting Frontend (Backend stays up)..."
+            docker compose -f docker-compose.vps1.yml up -d --no-deps --pull always frontend
+
+            echo "Waiting for health check..."
+            RETRIES=0
+            MAX_RETRIES=10
+            until docker inspect --format='{{.State.Health.Status}}' shortlink_frontend | grep -q "healthy"; do
+              RETRIES=$((RETRIES + 1))
+              if [ $RETRIES -ge $MAX_RETRIES ]; then
+                echo "Health check failed after $MAX_RETRIES attempts"
+                docker logs shortlink_frontend --tail 50
+                exit 1
+              fi
+              echo "  attempt $RETRIES/$MAX_RETRIES — retrying in 10s..."
+              sleep 10
+            done
+
+            docker image prune -f --filter "until=24h"
+            echo "Frontend deployed — tag: $FE_IMAGE_TAG"
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-frontend]
+    if: always()
+
+    steps:
+      - name: Deployment succeeded
+        if: needs.deploy-frontend.result == 'success'
+        run: |
+          echo "Frontend deployment succeeded"
+          echo "  image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image_tag }}"
+
+      - name: Deployment failed
+        if: needs.deploy-frontend.result == 'failure'
+        run: |
+          echo "Frontend deployment failed"
+          exit 1
