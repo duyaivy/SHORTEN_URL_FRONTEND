@@ -22,7 +22,6 @@ ARG VITE_API_URL
 ARG VITE_GOOGLE_CLIENT_ID
 ARG VITE_SERVER_ALIAS_URL
 ARG VITE_REDIRECT_URI
-ARG VITE_CLIENT_SECRET
 ARG VITE_GOOGLE_URL
 ARG VITE_SITE_KEY_CAPCHA
 
@@ -31,7 +30,6 @@ ENV VITE_API_URL=$VITE_API_URL \
     VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID \
     VITE_SERVER_ALIAS_URL=$VITE_SERVER_ALIAS_URL \
     VITE_REDIRECT_URI=$VITE_REDIRECT_URI \
-    VITE_CLIENT_SECRET=$VITE_CLIENT_SECRET \
     VITE_GOOGLE_URL=$VITE_GOOGLE_URL \
     VITE_SITE_KEY_CAPCHA=$VITE_SITE_KEY_CAPCHA
 
@@ -50,11 +48,15 @@ RUN rm -rf /usr/share/nginx/html/* && \
 # Copy built static files to /usr/share/nginx/html/a (matching Vite base: '/a/')
 COPY --from=builder /app/dist /usr/share/nginx/html/a
 
-# Copy our custom nginx config (load balancer + static file serving)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Set default env vars for template substitution (envsubst at startup)
+ENV VPS2_IP=127.0.0.1 \
+    NGINX_ENVSUBST_FILTER=VPS2_IP
 
-# Expose HTTP port
-EXPOSE 80
+# Copy custom nginx template (Nginx docker entrypoint will automatically render default.conf using envsubst)
+COPY nginx.conf /etc/nginx/templates/default.conf.template
+
+# Expose HTTP and HTTPS ports
+EXPOSE 80 443
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
