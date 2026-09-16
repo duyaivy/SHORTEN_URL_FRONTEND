@@ -104,7 +104,6 @@ services:
         VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
         VITE_SERVER_ALIAS_URL: 'http://localhost'
         VITE_REDIRECT_URI: 'http://localhost/a'
-        VITE_CLIENT_SECRET: ${VITE_CLIENT_SECRET}
         VITE_GOOGLE_URL: 'https://accounts.google.com/o/oauth2/v2/auth'
         VITE_SITE_KEY_CAPCHA: ${VITE_SITE_KEY_CAPCHA}
     image: shortlink-frontend:local

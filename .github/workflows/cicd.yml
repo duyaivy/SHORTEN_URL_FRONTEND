@@ -65,7 +65,6 @@ jobs:
             VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
             VITE_SERVER_ALIAS_URL=${{ secrets.VITE_SERVER_ALIAS_URL }}
             VITE_REDIRECT_URI=${{ secrets.VITE_REDIRECT_URI }}
-            VITE_CLIENT_SECRET=${{ secrets.VITE_CLIENT_SECRET }}
             VITE_GOOGLE_URL=${{ secrets.VITE_GOOGLE_URL }}
             VITE_SITE_KEY_CAPCHA=${{ secrets.VITE_SITE_KEY_CAPCHA }}
           cache-from: type=gha
@@ -93,20 +92,15 @@ jobs:
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
               -u "${{ github.actor }}" --password-stdin
 
-            IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image_tag }}"
+            FE_IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
+            GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}"
+            export FE_IMAGE_TAG GITHUB_REPOSITORY_OWNER
+
+            IMAGE="${{ env.REGISTRY }}/${GITHUB_REPOSITORY_OWNER}/shortlink-frontend:${FE_IMAGE_TAG}"
             echo "Pulling $IMAGE"
             docker pull "$IMAGE"
 
             cd ${{ secrets.VPS1_DEPLOY_DIR }}
-
-            # Update FE_IMAGE_TAG in .env (preserves other vars set by backend workflow)
-            if [ -f .env ]; then
-              sed -i 's|^FE_IMAGE_TAG=.*|FE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}|' .env
-              grep -q '^FE_IMAGE_TAG=' .env || echo 'FE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}' >> .env
-              sed -i 's|^GITHUB_REPOSITORY_OWNER=.*|GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}|' .env
-            else
-              printf 'GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}\nFE_IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}\n' > .env
-            fi
 
             echo "Restarting Frontend (Backend stays up)..."
             docker compose -f docker-compose.vps1.yml up -d --no-deps --pull always frontend
