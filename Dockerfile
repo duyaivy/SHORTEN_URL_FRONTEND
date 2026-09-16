@@ -48,8 +48,12 @@ RUN rm -rf /usr/share/nginx/html/* && \
 # Copy built static files to /usr/share/nginx/html/a (matching Vite base: '/a/')
 COPY --from=builder /app/dist /usr/share/nginx/html/a
 
-# Copy our custom nginx config (load balancer + static file serving)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Set default env vars for template substitution (envsubst at startup)
+ENV VPS2_IP=127.0.0.1 \
+    NGINX_ENVSUBST_FILTER=VPS2_IP
+
+# Copy custom nginx template (Nginx docker entrypoint will automatically render default.conf using envsubst)
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Expose HTTP port
 EXPOSE 80

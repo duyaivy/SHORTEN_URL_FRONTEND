@@ -8,6 +8,9 @@ services:
     restart: unless-stopped
     ports:
       - '80:80'
+    environment:
+      VPS2_IP: ${VPS2_IP:-127.0.0.1}
+      NGINX_ENVSUBST_FILTER: 'VPS2_IP'
     networks:
       - shortlink_network
     depends_on:
