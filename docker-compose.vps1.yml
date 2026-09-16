@@ -1,59 +1,59 @@
-version: "3.9"
+version: '3.9'
 
 services:
-  # 🌐 Frontend — Nginx serves React SPA + routes shortlinks to BE
+  #  Frontend — Nginx serves React SPA + routes shortlinks to BE
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/shortlink-frontend:${FE_IMAGE_TAG:-latest}
     container_name: shortlink_frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - '80:80'
     networks:
       - shortlink_network
     depends_on:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost/health']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
-  # ⚙️ Backend Node 1 — same VPS as Frontend
+  #  Backend Node 1 — same VPS as Frontend
   backend:
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/shortlink-backend:${BE_IMAGE_TAG:-latest}
     container_name: shortlink_backend_node1
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       NODE_ENV: production
       PORT: 8080
-      HOST: "0.0.0.0"
+      HOST: '0.0.0.0'
 
-      # 🌍 CORS & client URLs
+      #  CORS & client URLs
       CORS_ORIGIN: ${CORS_ORIGIN}
       CORS_ORIGIN_PUBLIC: ${CORS_ORIGIN_PUBLIC}
       CLIENT_SHORT_LINK: ${CLIENT_SHORT_LINK}
       SERVER_ALIAS_URL: ${SERVER_ALIAS_URL}
 
-      # 🚦 Rate limiting
+      #  Rate limiting
       COMMON_RATE_LIMIT_WINDOW_MS: ${COMMON_RATE_LIMIT_WINDOW_MS:-1000}
       COMMON_RATE_LIMIT_MAX_REQUESTS: ${COMMON_RATE_LIMIT_MAX_REQUESTS:-100}
 
-      # 🍃 Database (MongoDB)
+      #  Database (MongoDB)
       DATABASE_URL: ${DATABASE_URL}
 
-      # 🔴 Redis — shared across both nodes for stateless session sync
+      #  Redis — shared across both nodes for stateless session sync
       REDIS_URL: ${REDIS_URL}
 
-      # 🔐 JWT & security
+      #  JWT & security
       PRIVATE_ACCESS_TOKEN_KEY: ${PRIVATE_ACCESS_TOKEN_KEY}
       PRIVATE_REFRESH_TOKEN_KEY: ${PRIVATE_REFRESH_TOKEN_KEY}
       ALGORITHM_JWT: ${ALGORITHM_JWT:-HS256}
@@ -63,34 +63,40 @@ services:
       PRIVATE_PASSWORD: ${PRIVATE_PASSWORD}
       PASSWORD_SECRET: ${PASSWORD_SECRET}
 
-      # 📧 Email (SMTP)
+      #  Email (SMTP)
       EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
       EMAIL_PORT: ${EMAIL_PORT:-587}
       CLIENT_URL: ${CLIENT_URL}
       EMAIL_USER: ${EMAIL_USER}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
 
-      # 🔵 Google OAuth2
+      #  Google OAuth2
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
 
-      # 🤖 Google reCAPTCHA
+      #  Google reCAPTCHA
       SECRECT_KEY_RECAPCHA: ${SECRECT_KEY_RECAPCHA}
 
     networks:
       - shortlink_network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+        ]
       interval: 15s
       timeout: 10s
       retries: 3
       start_period: 20s
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   shortlink_network:
