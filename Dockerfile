@@ -55,8 +55,8 @@ ENV VPS2_IP=127.0.0.1 \
 # Copy custom nginx template (Nginx docker entrypoint will automatically render default.conf using envsubst)
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Expose HTTP port
-EXPOSE 80
+# Expose HTTP and HTTPS ports
+EXPOSE 80 443
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
