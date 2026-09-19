@@ -25,8 +25,8 @@ export const authApi = {
   refreshToken: () => {
     return axiosClient.post<SuccessResponse<AuthResponse>>(API_REFRESH_TOKEN_URL)
   },
-  logout: (refresh_token?: string) => {
-    return axiosClient.delete<SuccessResponse<null>>(API_LOGOUT_URL, { data: { refresh_token } })
+  logout: () => {
+    return axiosClient.delete<SuccessResponse<null>>(API_LOGOUT_URL)
   },
   forgotPassword: (params: { email?: string }) => {
     return axiosClient.get<SuccessResponse<null>>(API_FORGOT_PASS_URL, { params })
