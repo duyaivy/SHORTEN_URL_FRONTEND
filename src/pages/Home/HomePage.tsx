@@ -4,13 +4,16 @@ import { useParamsString } from '@/hooks/useUrlParams'
 import { authApi } from '@/services/auth.service'
 import { Toast } from '@/utils/toastMessage'
 import { LinkIcon, ScanQrCode } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 const HomePage = () => {
   const { t } = useTranslation(['common'])
   const { code } = useParamsString()
+  const navigate = useNavigate()
+  const hasTriggeredRef = useRef(false)
+
   const mutationLogin = useLoginMutation({
     mutationFn: authApi.loginWithGG,
     handleError: () => {
@@ -18,10 +21,18 @@ const HomePage = () => {
     }
   })
   useEffect(() => {
-    if (code) {
-      mutationLogin.mutate({ code })
+    if (code && !hasTriggeredRef.current) {
+      hasTriggeredRef.current = true
+      mutationLogin.mutate(
+        { code },
+        {
+          onSettled: () => {
+            navigate(path.home, { replace: true })
+          }
+        }
+      )
     }
-  }, [code])
+  }, [code, navigate])
   return (
     <div className='max-w-5xl mx-auto px-4 flex gap-2 mo:gap-20 flex-col md:flex-row justify-around items-center pb-16 '>
       <motion.div

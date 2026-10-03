@@ -27,8 +27,10 @@ export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLog
     mutationFn: mutationFn,
     onSuccess: async ({ data }) => {
       setIsAuthenticated(true)
-      setAccessTokenToLS(data.data.access_token as string)
-      setRefreshTokenToLS(data.data.refresh_token as string)
+      const accessToken = data.data?.access_token || data.data?.accessToken
+      const refreshToken = data.data?.refresh_token || data.data?.refreshToken
+      if (accessToken) setAccessTokenToLS(accessToken)
+      if (refreshToken) setRefreshTokenToLS(refreshToken)
       const dataUser = await userApi.getMe()
       setUserToLS(dataUser.data.data as User)
       setProfile(dataUser.data.data as User)
