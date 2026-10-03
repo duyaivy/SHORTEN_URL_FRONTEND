@@ -1,4 +1,4 @@
-# 🔗 ShortLink Frontend – Modern Link Shortening & QR Management App
+# 🔗 ShortLink Frontend – Modern Link Shortening & QR Management App 
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
