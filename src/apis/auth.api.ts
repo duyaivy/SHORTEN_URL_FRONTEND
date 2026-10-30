@@ -1,9 +1,11 @@
+import { setSessionState } from '@/services/session-state'
+import { useQueryClient } from '@tanstack/react-query'
 import { mutationKeys } from '@/helpers/key-tanstack'
 import { authApi } from '@/services/auth.service'
 import { useMutation } from '@tanstack/react-query'
 import { UseFormReturn } from 'react-hook-form'
 import { Toast } from '@/utils/toastMessage'
-import { clearLS, setAccessTokenToLS, setRefreshTokenToLS, setUserToLS } from '@/utils/storage'
+import { clearLS, setUserToLS } from '@/utils/storage'
 import { User } from '@/models/interface/user.interface'
 import { Dispatch, SetStateAction, useContext } from 'react'
 import { AppContext } from '../contexts/app.context'
@@ -22,18 +24,17 @@ interface useLoginProps<TVariables> {
 export const useLoginMutation = <TVariables>({ mutationFn, handleError }: useLoginProps<TVariables>) => {
   const { setProfile, setIsAuthenticated } = useContext(AppContext)
   const { t } = useTranslation('message')
+  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: mutationKeys.login,
     mutationFn: mutationFn,
-    onSuccess: async ({ data }) => {
-      setIsAuthenticated(true)
-      const accessToken = data.data?.access_token || data.data?.accessToken
-      const refreshToken = data.data?.refresh_token || data.data?.refreshToken
-      if (accessToken) setAccessTokenToLS(accessToken)
-      if (refreshToken) setRefreshTokenToLS(refreshToken)
+    onSuccess: async () => {
+      queryClient.clear()
       const dataUser = await userApi.getMe()
       setUserToLS(dataUser.data.data as User)
       setProfile(dataUser.data.data as User)
+      setIsAuthenticated(true)
+      setSessionState('authenticated')
 
       Toast.success({ title: t('login_success'), description: t('login_success_description') })
     },
@@ -74,13 +75,13 @@ export const useRegisterMutation = ({ handleError }: { handleError?: (error: Axi
   return useMutation({
     mutationKey: mutationKeys.register,
     mutationFn: authApi.register,
-    onSuccess: async ({ data }) => {
-      setAccessTokenToLS(data.data.access_token as string)
-      setRefreshTokenToLS(data.data.refresh_token as string)
+    onSuccess: async (_response, credentials) => {
+      await authApi.login(credentials)
       const dataUser = await userApi.getMe()
       setUserToLS(dataUser.data.data as User)
       setProfile(dataUser.data.data as User)
       setIsAuthenticated(true)
+      setSessionState('authenticated')
       Toast.success({
         title: t('register_success'),
         description: t('register_success_description')
@@ -101,6 +102,7 @@ export const useLogoutMutation = () => {
       setIsAuthenticated(false)
       clearLS()
       setProfile(null)
+      setSessionState('guest')
     }
   })
 }
