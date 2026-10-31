@@ -1,4 +1,6 @@
-import { useContext, useRef, useState, useCallback } from 'react'
+import Login from '@/pages/Login'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useContext, useRef, useState, useCallback, useEffect } from 'react'
 import QRCode from 'qrcode'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +25,10 @@ import ShortenResultCard from './components/ShortenResultCard'
 export default function ShortenURL() {
   const { t } = useTranslation()
   const { isAuthenticated } = useContext(AppContext)
+  const [loginRequired, setLoginRequired] = useState(false)
+  useEffect(() => {
+    if (isAuthenticated) setLoginRequired(false)
+  }, [isAuthenticated])
   const queryClient = useQueryClient()
   const recaptchaRef = useRef<ReCAPTCHA>(null)
   const qrContainerRef = useRef<HTMLDivElement>(null)
@@ -46,7 +52,12 @@ export default function ShortenURL() {
   })
 
   const shortenLinkMutation = useShortenUrlMutation({
-    onError: (error) => handleErrorAPI(error, form),
+    onError: (error) => {
+      if (error.response?.status === 401) setLoginRequired(true)
+      else if (!error.response || error.response.status >= 500) {
+        Toast.error({ description: 'Unable to renew your session. Your URL has been kept. Please retry.' })
+      } else handleErrorAPI(error, form)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.myUrls] })
     }
@@ -56,11 +67,8 @@ export default function ShortenURL() {
   const isSuccess = shortenLinkMutation.isSuccess
   const isPending = shortenLinkMutation.isPending
 
-  const qrUrl = isSuccess && shortUrl
-    ? shortUrl
-    : isCustomAlias && aliasValue
-      ? `${config.baseUrl}/${aliasValue}`
-      : DEFAULT_URL
+  const qrUrl =
+    isSuccess && shortUrl ? shortUrl : isCustomAlias && aliasValue ? `${config.baseUrl}/${aliasValue}` : DEFAULT_URL
 
   const handleSubmit = async () => {
     const recapchaValue = await recaptchaRef.current?.executeAsync()
@@ -108,7 +116,10 @@ export default function ShortenURL() {
         errorCorrectionLevel: 'H'
       })
       canvas.toBlob((blob) => {
-        if (!blob) { Toast.error({ description: t('download_qr_error') }); return }
+        if (!blob) {
+          Toast.error({ description: t('download_qr_error') })
+          return
+        }
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -128,6 +139,14 @@ export default function ShortenURL() {
       transition={{ duration: 0.4 }}
       className='w-full max-w-5xl mx-auto px-4 py-4'
     >
+      <Dialog open={loginRequired} onOpenChange={setLoginRequired}>
+        <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-2xl'>
+          <DialogHeader>
+            <DialogTitle>Please log in again. Your URL has been kept.</DialogTitle>
+          </DialogHeader>
+          <Login />
+        </DialogContent>
+      </Dialog>
       {/* Page Header */}
       <div className='text-center mb-8'>
         <h1 className='text-2xl md:text-3xl font-bold mb-1 bg-gradient-to-r from-main to-secondary bg-clip-text text-transparent'>
