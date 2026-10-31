@@ -1,5 +1,5 @@
 export const path = {
-  home: '/',
+  home: '/a',
   login: '/a/login',
   register: '/a/register',
   coming_soon: '/a/coming-soon',
@@ -8,6 +8,6 @@ export const path = {
   notFound: '/a/404',
   my_url: '/a/my-url',
   history: '/a/qr-history',
-  get_alias: '/:alias',
-  get_alias_with_pw: '/password/:alias'
+  get_alias_with_pw: '/a/password/:alias',
+  link_unavailable: '/a/link-unavailable'
 }

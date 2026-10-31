@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { Mail } from 'lucide-react'
 import { logo } from '@/assets/images'
 import { useHandleError } from '@/utils/handleErrorAPI'
-import { useRegisterSchema } from '@/zod/register.zod'
+import { useRegisterSchema } from '@/zods/register.zod'
 
 export default function Register() {
   const navigate = useNavigate()

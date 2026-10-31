@@ -41,21 +41,11 @@ export const useGetShortenUrlMutation = ({ onSuccess, onError }: useShortenUrlPr
   })
 }
 
-interface useQueryAliasProps {
-  alias: string
-}
-export const useQueryAlias = ({ alias }: useQueryAliasProps) => {
-  return useQuery({
-    queryKey: [queryKeys.alias, alias],
-    queryFn: () => urlApi.getAlias(alias)
-  })
-}
 export const useQueryMyUrls = (params: GetPaginationConfig) => {
   return useQuery({
     queryKey: [queryKeys.myUrls, params],
     queryFn: () => urlApi.getMyUrls(params),
-    staleTime: STATE_TIME,
-    placeholderData: keepPreviousData
+    staleTime: STATE_TIME
   })
 }
 
@@ -63,6 +53,7 @@ export const useQueryMyUrls = (params: GetPaginationConfig) => {
 interface useDeleteUrlsProps {
   onSuccess?: (data: AxiosResponse<SuccessResponse<null>>) => void
   onError?: (error: AxiosError) => void
+  onSettled?: () => void
 }
 export const useDeleteUrlsMutation = ({ onSuccess, onError }: useDeleteUrlsProps) => {
   return useMutation({
@@ -99,12 +90,13 @@ export const useQueryQrHistory = (params: GetPaginationConfig) => {
     placeholderData: keepPreviousData
   })
 }
-export const useDeleteQrHistoryMutation = ({ onSuccess, onError }: useDeleteUrlsProps) => {
+export const useDeleteQrHistoryMutation = ({ onSuccess, onError, onSettled }: useDeleteUrlsProps) => {
   return useMutation({
     mutationKey: mutationKeys.deleteQrHistory,
     mutationFn: urlApi.deleteQrHistory,
     onSuccess,
-    onError
+    onError,
+    onSettled
   })
 }
 // recapcha

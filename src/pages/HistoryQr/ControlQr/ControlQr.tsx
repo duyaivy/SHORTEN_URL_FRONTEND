@@ -3,26 +3,24 @@ import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ExtraQrHistory } from '@/models/interface/url.interface'
+import { useManageHistoryScan } from '@/stores/qr-history.store'
 import { Search } from 'lucide-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Lottie from 'react-lottie-player'
 interface ControlQrProps {
-  onCheckAll: () => void
-  extraHistories: ExtraQrHistory[]
   onDeleteHistories?: () => void
   isLoading?: boolean
 }
-export default function ControlQr({ onCheckAll, extraHistories, onDeleteHistories, isLoading }: ControlQrProps) {
+export default function ControlQr({ onDeleteHistories, isLoading }: ControlQrProps) {
   const { t } = useTranslation()
-
+  const { extraHistory, handleCheckAll } = useManageHistoryScan()
   const isAllChecked = useMemo(() => {
-    return extraHistories.every((url) => url.isCheck) && extraHistories.length > 0
-  }, [extraHistories])
+    return extraHistory.every((url) => url.isCheck) && extraHistory.length > 0
+  }, [extraHistory])
   const countChecked = useMemo(() => {
-    return extraHistories.filter((url) => url.isCheck).length
-  }, [extraHistories])
+    return extraHistory.filter((url) => url.isCheck).length
+  }, [extraHistory])
   return (
     <div className='flex flex-col md:flex-row w-full md:items-center justify-between items-start'>
       {isLoading ? (
@@ -34,9 +32,9 @@ export default function ControlQr({ onCheckAll, extraHistories, onDeleteHistorie
         <>
           <div className='flex gap-2 md:gap-4 justify-start flex-1 items-center'>
             <div className='border rounded-md border-main text-lg p-2'>
-              {t('total')} {extraHistories.length}
+              {t('total')} {extraHistory.length}
             </div>
-            <Checkbox checked={isAllChecked} onClick={onCheckAll} className='size-6 m-1' />
+            <Checkbox checked={isAllChecked} onClick={handleCheckAll} className='size-6 m-1' />
             {countChecked > 0 && (
               <ConfirmDeleteDialog
                 requiredText={t('require_text_all', { count: countChecked })}

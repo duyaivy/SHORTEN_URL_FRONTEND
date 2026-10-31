@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { path } from '@/constants/path'
 import { useHandleError } from '@/utils/handleErrorAPI'
-import { ShortenURLPasswordSchema, ShortenURLPasswordSchemaType } from '@/zod/url.zod'
+import { ShortenURLPasswordSchema, ShortenURLPasswordSchemaType } from '@/zods/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -26,7 +26,13 @@ export default function AliasFetchWithPW() {
     onSuccess: (data) => {
       window.location.href = data.data.data.url || path.home
     },
-    onError: (error) => handleErrorAPI(error, form)
+    onError: (error: any) => {
+      const message = error.response?.data?.message
+      if (message) {
+        form.setError('password', { message, type: 'server' })
+      }
+      handleErrorAPI(error, form)
+    }
   })
   const handleSubmit = () => {
     if (alias) {

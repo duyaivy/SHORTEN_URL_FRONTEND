@@ -1,14 +1,14 @@
-import { Navigate, Outlet, RouteObject, useLocation, useRoutes } from 'react-router-dom'
-import { Fragment, lazy, ReactNode, useContext, Suspense } from 'react'
+import { Navigate, Outlet, RouteObject, useLocation, useParams, useRoutes } from 'react-router-dom'
+import { Fragment, lazy, ReactNode, useContext, Suspense, useEffect } from 'react'
 import { path } from '@/constants/path'
 import { AppContext } from '@/contexts/app.context'
+import config from '@/constants/config.const'
 
 // Lazy load all components
 const ShortenURL = lazy(() => import('@/pages/ShortenURL'))
 const ScanQR = lazy(() => import('@/pages/ScanQR'))
 const AuthLayout = lazy(() => import('@/components/AuthLayout'))
 const HistoryQr = lazy(() => import('@/pages/HistoryQr'))
-const AliasFetch = lazy(() => import('@/pages/GetLink/AliasFetch'))
 const AliasFetchWithPW = lazy(() => import('@/pages/GetLink/AliasFetchWithPW'))
 const LoadingSpinner = lazy(() => import('@/components/LoadingSpinner'))
 const MyURL = lazy(() => import('@/pages/MyURL'))
@@ -17,6 +17,17 @@ const Login = lazy(() => import('@/pages/Login'))
 const Register = lazy(() => import('@/pages/Register'))
 const PageNotFound = lazy(() => import('@/pages/404/PageNotFound'))
 const HomePage = lazy(() => import('@/pages/Home'))
+const LinkUnavailable = lazy(() => import('@/pages/LinkUnavailable'))
+
+const DirectViewRedirect = () => {
+  const { alias } = useParams<{ alias: string }>()
+  useEffect(() => {
+    if (alias) {
+      window.location.replace(`${config.baseUrl}/view/${alias}`)
+    }
+  }, [alias])
+  return <LoadingSpinner />
+}
 
 const LazyComponent = ({ children }: { children: ReactNode }) => (
   <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
@@ -49,8 +60,18 @@ export default function useRoutesElements() {
   const routes: RouteConfig[] = [
     {
       path: '/a',
-      element: <Outlet />,
+      element: <Outlet />, 
       children: [
+        {
+          path: path.home,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <HomePage />
+              </Layout>
+            </LazyComponent>
+          )
+        },
         {
           path: path.shorten_link,
           element: (
@@ -67,6 +88,26 @@ export default function useRoutesElements() {
             <LazyComponent>
               <Layout>
                 <ScanQR />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
+          path: path.link_unavailable,
+          element: (
+            <LazyComponent>
+              <Layout>
+                <LinkUnavailable />
+              </Layout>
+            </LazyComponent>
+          )
+        },
+        {
+          path: '/a/link-unavailable',
+          element: (
+            <LazyComponent>
+              <Layout>
+                <LinkUnavailable />
               </Layout>
             </LazyComponent>
           )
@@ -130,17 +171,6 @@ export default function useRoutesElements() {
       element: <Outlet />,
       children: [
         {
-          path: path.home,
-          element: (
-            <LazyComponent>
-              <Layout>
-                <HomePage />
-              </Layout>
-            </LazyComponent>
-          )
-        },
-
-        {
           path: path.get_alias_with_pw,
           element: (
             <LazyComponent>
@@ -151,8 +181,8 @@ export default function useRoutesElements() {
           )
         },
         {
-          path: path.get_alias,
-          element: <AliasFetch />
+          path: '/view/:alias',
+          element: <DirectViewRedirect />
         },
         {
           path: '*',

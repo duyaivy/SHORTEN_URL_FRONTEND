@@ -20,6 +20,5 @@ export const useUrlsQueryConfig = () => {
     },
     isUndefined
   )
-
   return queryConfig
 }

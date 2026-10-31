@@ -1,132 +1,73 @@
 import config from '@/constants/config.const'
+import { clearLS } from '@/utils/storage'
+import { getSessionState, setSessionState } from './session-state'
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 
-import { SuccessResponse } from '@/models/interface/response.interface'
-import {
-  clearLS,
-  getAccessTokenFromLS,
-  getRefreshTokenFromLS,
-  setAccessTokenToLS,
-  setRefreshTokenToLS
-} from '@/utils/storage'
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  HttpStatusCode,
-  InternalAxiosRequestConfig
-} from 'axios'
-import isEqual from 'lodash/isEqual'
-
-interface TokenResponse {
-  access_token: string
-  refresh_token: string
-  email: string
-}
-
-interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
+interface SessionRequest extends InternalAxiosRequestConfig {
   _retry?: boolean
+  _sessionGeneration?: number
 }
 
-let isRefreshing: boolean = false
-type RefreshSubscriber = (token: string) => void
-let refreshSubscribers: RefreshSubscriber[] = []
-
-const addSubscriber = (callback: RefreshSubscriber): void => {
-  refreshSubscribers.push(callback)
-}
-
-const onRefreshed = (token: string): void => {
-  refreshSubscribers.forEach((callback) => callback(token))
-  refreshSubscribers = []
-}
-
-const axiosClient: AxiosInstance = axios.create({
+const axiosClient = axios.create({
   baseURL: config.baseUrl,
-  headers: {
-    'Content-Type': 'application/json'
+  withCredentials: true,
+  timeout: 15000,
+  headers: { 'Content-Type': 'application/json' }
+})
+// Separate client: a refresh response must never enter the retry interceptor.
+export const refreshClient = axios.create({ baseURL: config.baseUrl, withCredentials: true, timeout: 15000 })
+let refreshPromise: Promise<void> | null = null
+let generation = 0
+
+const expireSession = () => {
+  clearLS()
+  setSessionState('expired')
+}
+
+axiosClient.interceptors.request.use((request: SessionRequest) => {
+  request._sessionGeneration = generation
+  // Freeze the intent on the request so a retry cannot become anonymous.
+  if (request.method === 'post' && request.url === '/' && getSessionState() !== 'guest') {
+    request.headers.set('X-Auth-Intent', 'required')
   }
+  return request
 })
 
-// Request interceptor
-axiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = getAccessTokenFromLS()
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error: AxiosError): Promise<AxiosError> => {
-    return Promise.reject(error)
-  }
-)
-
-// Response interceptor
 axiosClient.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => {
-    return response
-  },
-  async (error: AxiosError): Promise<AxiosError> => {
-    const originalRequest = error.config as ExtendedAxiosRequestConfig
-
-    if (error.response && isEqual(error.response.status, HttpStatusCode.Unauthorized) && !originalRequest._retry) {
-      if (!isRefreshing) {
-        originalRequest._retry = true
-        isRefreshing = true
-
-        try {
-          const refreshToken = getRefreshTokenFromLS()
-
-          if (!refreshToken) {
-            logout()
-            return Promise.reject(error)
-          }
-
-          const response = await axios.post<SuccessResponse<TokenResponse>>(`${config.baseUrl}/auth/refresh-token`, {
-            refresh_token: refreshToken
-          })
-
-          if (isEqual(response.status, HttpStatusCode.Ok)) {
-            const { access_token, refresh_token } = response.data.data
-
-            setAccessTokenToLS(access_token)
-            setRefreshTokenToLS(refresh_token)
-            axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
-
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${access_token}`
-            }
-
-            onRefreshed(access_token)
-            isRefreshing = false
-            return axiosClient(originalRequest)
-          }
-        } catch (refreshError) {
-          isRefreshing = false
-
-          logout()
-          return Promise.reject(refreshError)
-        }
-      } else {
-        return new Promise((resolve) => {
-          addSubscriber((token: string) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`
-            }
-            resolve(axiosClient(originalRequest))
-          })
-        })
-      }
+  (response) => response,
+  async (error: AxiosError<{ data?: { code?: string } }>) => {
+    const request = error.config as SessionRequest | undefined
+    // Only guards signal this code. Login, password checks, and unrelated 401/403s do not refresh.
+    if (!request || error.response?.status !== 401 || error.response.data?.data?.code !== 'SESSION_REQUIRED') {
+      throw error
     }
-
-    return Promise.reject(error)
+    if (request._retry) {
+      expireSession()
+      throw error
+    }
+    request._retry = true
+    // A guard challenge establishes authenticated intent even if UI restoration was stale.
+    if (request.method === 'post' && request.url === '/') request.headers.set('X-Auth-Intent', 'required')
+    if (request._sessionGeneration === generation) {
+      if (!refreshPromise) {
+        refreshPromise = refreshClient
+          .post('/auth/refresh-token', {})
+          .then(() => {
+            generation++
+          })
+          .catch((refreshError: unknown) => {
+            if (axios.isAxiosError(refreshError) && refreshError.response?.status === 401) expireSession()
+            throw refreshError
+          })
+          .finally(() => {
+            refreshPromise = null
+          })
+      }
+      await refreshPromise
+    }
+    // Cookies are installed by the browser. Never inject a Bearer token.
+    return axiosClient(request)
   }
 )
-
-const logout = (): void => {
-  clearLS()
-  window.location.href = '/a/login'
-}
 
 export default axiosClient

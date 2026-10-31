@@ -13,7 +13,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Edit, ExternalLink, Link2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { ShortenURLSchema, ShortenURLSchemaType } from '@/zod/url.zod'
+import { ShortenURLSchema, ShortenURLSchemaType } from '@/zods/url.zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import InputPassword from '../InputPassword/InputPassword'
@@ -47,7 +47,7 @@ export default function UpdateUrlDialog({ onUpdate, isOnUpdate = false, url }: U
       <DialogTrigger asChild>
         <TooltipProvider>
           <Tooltip delayDuration={100}>
-            <TooltipTrigger>
+            <TooltipTrigger onClick={() => setOpen((prev) => !prev)}>
               <button
                 disabled={isOnUpdate}
                 className='p-2 duration-300 cursor-pointer text-blue-500 hover:text-blue-600'

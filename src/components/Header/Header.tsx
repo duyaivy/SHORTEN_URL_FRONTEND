@@ -19,7 +19,6 @@ import { logo } from '@/assets/images'
 import LinkHoverAnimate from '../LinkHoverAnimate'
 import { menuV2 } from '@/assets/icons'
 import IconAnimateClick from '../IconAnimateClick'
-import { clearLS, getRefreshTokenFromLS } from '@/utils/storage'
 import LoginNowDialog from '@/pages/Login/LoginNowDialog'
 
 export default function Header() {
@@ -29,12 +28,7 @@ export default function Header() {
 
   const logoutMutation = useLogoutMutation()
   const handleLogout = () => {
-    const refresh_token = getRefreshTokenFromLS()
-    if (refresh_token) {
-      logoutMutation.mutate(refresh_token)
-    } else {
-      clearLS()
-    }
+    logoutMutation.mutate()
   }
 
   return (
